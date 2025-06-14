@@ -61,7 +61,8 @@
 	"dependencies": {
 		"@inlang/paraglide-js": "^2.0.0",
 		"drizzle-orm": "^0.40.0",
-		"postgres": "^3.4.5"
+		"postgres": "^3.4.5",
+		"zod": "^3.25.64"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
