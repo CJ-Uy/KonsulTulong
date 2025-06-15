@@ -60,7 +60,9 @@
 	},
 	"dependencies": {
 		"@inlang/paraglide-js": "^2.0.0",
+		"drizzle-cuid2": "^2.0.0",
 		"drizzle-orm": "^0.40.0",
+		"nanoid": "^5.1.5",
 		"postgres": "^3.4.5",
 		"zod": "^3.25.64"
 	},
