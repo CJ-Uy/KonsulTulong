@@ -21,6 +21,7 @@
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
+		"@faker-js/faker": "^9.8.0",
 		"@internationalized/date": "^3.8.1",
 		"@lucide/svelte": "^0.513.0",
 		"@sveltejs/adapter-node": "^5.2.12",
@@ -62,6 +63,7 @@
 	},
 	"dependencies": {
 		"@inlang/paraglide-js": "^2.0.0",
+		"better-auth": "^1.2.9",
 		"dotenv": "^16.5.0",
 		"drizzle-cuid2": "^2.0.0",
 		"drizzle-orm": "^0.40.0",
