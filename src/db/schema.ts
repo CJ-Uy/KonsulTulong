@@ -1,6 +1,6 @@
 import { pgTable, varchar, jsonb } from "drizzle-orm/pg-core";
 import { cuid2 } from "drizzle-cuid2/postgres";
-import { id, timestamps } from "./column.helpers.ts";
+import { id, timestamps } from "./column.helpers";
 
 export const users = pgTable("users", {
 	...id,
