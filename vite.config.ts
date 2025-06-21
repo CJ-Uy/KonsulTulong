@@ -11,5 +11,8 @@ export default defineConfig({
 			project: "./project.inlang",
 			outdir: "./src/lib/paraglide"
 		})
-	]
+	],
+	optimizeDeps: {
+		exclude: ["@aws-sdk", "@smithy"] // Exclude problematic dependencies
+	}
 });
