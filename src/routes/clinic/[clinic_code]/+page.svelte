@@ -1,7 +1,9 @@
-<script>
-    import { page } from '$app/state';
+<script lang="ts">
+	import type { PageProps } from "./$types";
 
-    const clinicCode = $derived(page.params.clinic_code);
-  </script>
-  
-  <h1>Clinic Code: {clinicCode}</h1>
+	let { data }: PageProps = $props();
+</script>
+
+<pre>
+  {JSON.stringify(data, null, 2)}
+</pre>
