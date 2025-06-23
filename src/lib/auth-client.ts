@@ -1,12 +1,10 @@
 import { createAuthClient } from "better-auth/svelte";
-export const {
-  signIn,
-  signUp,
-  signOut,
-  useSession,
-  forgetPassword,
-  resetPassword,
-} = createAuthClient({
-  /** the base url of the server (optional if you're using the same domain) */
-  baseURL: "http://localhost:3000",
-});
+import dotenv from "dotenv";
+
+// Load environment variables from .env file
+dotenv.config();
+
+export const { signIn, signUp, signOut, useSession, forgetPassword, resetPassword } =
+	createAuthClient({
+		baseURL: process.env.BETTER_AUTH_URL
+	});

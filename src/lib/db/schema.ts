@@ -2,11 +2,12 @@ import { pgTable, varchar, jsonb, text, boolean, timestamp } from "drizzle-orm/p
 import { cuid2 } from "drizzle-cuid2/postgres";
 import { id, timestamps } from "./column.helpers";
 
-export const users = pgTable("users", {
-	...id,
+export const user = pgTable("user", {
+	id: text("id").primaryKey(), // better-auth generates the id upon sign up
 	...timestamps,
 	firstName: varchar("first_name"),
 	lastName: varchar("last_name"),
+	name: varchar("name"),
 	email: text("email").notNull().unique(),
 	emailVerified: boolean("email_verified")
 		.$defaultFn(() => false)
@@ -14,29 +15,29 @@ export const users = pgTable("users", {
 	image: text("image")
 });
 
-export const clinics = pgTable("clinics", {
+export const clinic = pgTable("clinic", {
 	...id,
 	...timestamps,
 	clinicCode: varchar("clinic_code", { length: 6 }).notNull().unique(),
 	userId: cuid2("user_id")
 		.notNull()
-		.references(() => users.id),
-	activeTemplateId: cuid2("active_template_id").references(() => templates.id)
+		.references(() => user.id),
+	activeTemplateId: cuid2("active_template_id").references(() => template.id)
 });
 
-export const responses = pgTable("responses", {
+export const response = pgTable("responses", {
 	...id,
 	...timestamps,
 	clinicId: cuid2("clinic_id")
 		.notNull()
-		.references(() => clinics.id),
+		.references(() => clinic.id),
 	templateId: cuid2("template_id")
 		.notNull()
-		.references(() => templates.id),
+		.references(() => template.id),
 	values: jsonb("values").notNull()
 });
 
-export const templates = pgTable("templates", {
+export const template = pgTable("template", {
 	...id,
 	...timestamps,
 	name: varchar("name", { length: 256 }).notNull().unique(),
@@ -54,7 +55,7 @@ export const session = pgTable("session", {
 	userAgent: text("user_agent"),
 	userId: text("user_id")
 		.notNull()
-		.references(() => users.id, { onDelete: "cascade" })
+		.references(() => user.id, { onDelete: "cascade" })
 });
 
 export const account = pgTable("account", {
@@ -63,7 +64,7 @@ export const account = pgTable("account", {
 	providerId: text("provider_id").notNull(),
 	userId: text("user_id")
 		.notNull()
-		.references(() => users.id, { onDelete: "cascade" }),
+		.references(() => user.id, { onDelete: "cascade" }),
 	accessToken: text("access_token"),
 	refreshToken: text("refresh_token"),
 	idToken: text("id_token"),
