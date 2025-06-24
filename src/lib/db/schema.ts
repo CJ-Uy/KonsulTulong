@@ -12,16 +12,15 @@ export const user = pgTable("user", {
 	emailVerified: boolean("email_verified")
 		.$defaultFn(() => false)
 		.notNull(),
-	image: text("image")
+	image: text("image"),
+	clinicId: cuid2("clinic_id").references(() => clinic.id)
 });
 
 export const clinic = pgTable("clinic", {
 	...id,
 	...timestamps,
 	clinicCode: varchar("clinic_code", { length: 6 }).notNull().unique(),
-	userId: cuid2("user_id")
-		.notNull()
-		.references(() => user.id),
+	clinicName: varchar("clinic_name"),
 	activeTemplateId: cuid2("active_template_id").references(() => template.id)
 });
 

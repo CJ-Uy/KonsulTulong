@@ -16,7 +16,8 @@
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
 		"db:generate": "drizzle-kit generate",
-		"db:populate": "tsx src/db/scripts/populate.ts"
+		"db:populate": "tsx src/lib/db/scripts/populate.ts",
+		"db:delete": "tsx src/lib/db/scripts/delete.ts"
 	},
 	"devDependencies": {
 		"@dnd-kit-svelte/core": "^0.0.8",
