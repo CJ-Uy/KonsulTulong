@@ -1,6 +1,10 @@
-import { pgTable, varchar, jsonb, text, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, varchar, jsonb, text, boolean, timestamp, pgEnum } from "drizzle-orm/pg-core";
 import { cuid2 } from "drizzle-cuid2/postgres";
 import { id, timestamps } from "./column.helpers";
+
+// --- Enums for Roles and Types ---
+export const userRoleEnum = pgEnum("user_role", ["admin", "doctor", "secretary", "unassigned"]);
+export const templateTypeEnum = pgEnum("template_type", ["system", "clinic"]);
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(), // better-auth generates the id upon sign up
@@ -9,19 +13,28 @@ export const user = pgTable("user", {
 	lastName: varchar("last_name"),
 	name: varchar("name"),
 	email: text("email").notNull().unique(),
-	emailVerified: boolean("email_verified")
-		.$defaultFn(() => false)
-		.notNull(),
+	emailVerified: boolean("email_verified").default(false).notNull(),
 	image: text("image"),
-	clinicId: cuid2("clinic_id").references(() => clinic.id)
+	clinicId: cuid2("clinic_id").references(() => clinic.id),
+	role: userRoleEnum("role").default("secretary").notNull()
 });
 
 export const clinic = pgTable("clinic", {
 	...id,
 	...timestamps,
 	clinicCode: varchar("clinic_code", { length: 6 }).notNull().unique(),
-	clinicName: varchar("clinic_name"),
-	activeTemplateId: cuid2("active_template_id").references(() => template.id)
+	clinicName: varchar("clinic_name")
+});
+
+export const template = pgTable("template", {
+	...id,
+	...timestamps,
+	name: varchar("name", { length: 256 }).notNull(),
+	description: varchar("description", { length: 10000 }),
+	questions: jsonb("questions").notNull(),
+	type: templateTypeEnum("type").default("system").notNull(),
+	// Nullable because "system" templates don't belong to a clinic
+	clinicId: cuid2("clinic_id").references(() => clinic.id, { onDelete: "cascade" })
 });
 
 export const response = pgTable("responses", {
@@ -33,16 +46,23 @@ export const response = pgTable("responses", {
 	templateId: cuid2("template_id")
 		.notNull()
 		.references(() => template.id),
-	values: jsonb("values").notNull()
+	values: jsonb("values").notNull(),
 });
 
-export const template = pgTable("template", {
-	...id,
-	...timestamps,
-	name: varchar("name", { length: 256 }).notNull().unique(),
-	description: varchar("description", { length: 10000 }),
-	questions: jsonb("questions").notNull()
+// --- Join Tables ---
+
+// Connects clinics to the templates they have chosen to use
+export const clinicTemplates = pgTable("clinic_templates", {
+	clinicId: cuid2("clinic_id")
+		.notNull()
+		.references(() => clinic.id, { onDelete: "cascade" }),
+	templateId: cuid2("template_id")
+		.notNull()
+		.references(() => template.id, { onDelete: "cascade" }),
+	isDefault: boolean("is_default").default(false).notNull()
 });
+
+// --- Auth & Session Tables ---
 
 export const session = pgTable("session", {
 	id: text("id").primaryKey(),
@@ -80,6 +100,6 @@ export const verification = pgTable("verification", {
 	identifier: text("identifier").notNull(),
 	value: text("value").notNull(),
 	expiresAt: timestamp("expires_at").notNull(),
-	createdAt: timestamp("created_at").$defaultFn(() => /* @__PURE__ */ new Date()),
-	updatedAt: timestamp("updated_at").$defaultFn(() => /* @__PURE__ */ new Date())
+	createdAt: timestamp("created_at").$defaultFn(() => new Date()),
+	updatedAt: timestamp("updated_at").$defaultFn(() => new Date())
 });

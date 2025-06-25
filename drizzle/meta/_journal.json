@@ -43,6 +43,13 @@
       "when": 1750780525937,
       "tag": "0005_milky_unus",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1750866610746,
+      "tag": "0006_magenta_captain_cross",
+      "breakpoints": true
     }
   ]
 }
