@@ -1,19 +1,19 @@
 <script lang="ts">
 	import CameraIcon from "@tabler/icons-svelte/icons/camera";
 	import ChartBarIcon from "@tabler/icons-svelte/icons/chart-bar";
-	import DashboardIcon from "@tabler/icons-svelte/icons/dashboard";
+	import ClipboardIcon from "@tabler/icons-svelte/icons/clipboard";
 	import DatabaseIcon from "@tabler/icons-svelte/icons/database";
 	import FileAiIcon from "@tabler/icons-svelte/icons/file-ai";
 	import FileDescriptionIcon from "@tabler/icons-svelte/icons/file-description";
 	import FileWordIcon from "@tabler/icons-svelte/icons/file-word";
-	import FolderIcon from "@tabler/icons-svelte/icons/folder";
+	import PhotoSensorIcon from "@tabler/icons-svelte/icons/photo-sensor";
 	import HelpIcon from "@tabler/icons-svelte/icons/help";
 	import InnerShadowTopIcon from "@tabler/icons-svelte/icons/inner-shadow-top";
 	import ListDetailsIcon from "@tabler/icons-svelte/icons/list-details";
 	import ReportIcon from "@tabler/icons-svelte/icons/report";
 	import SearchIcon from "@tabler/icons-svelte/icons/search";
 	import SettingsIcon from "@tabler/icons-svelte/icons/settings";
-	import UsersIcon from "@tabler/icons-svelte/icons/users";
+	import FaceMaskIcon from "@tabler/icons-svelte/icons/face-mask";
 	import NavDocuments from "./nav-documents.svelte";
 	import NavMain from "./nav-main.svelte";
 	import NavSecondary from "./nav-secondary.svelte";
@@ -29,12 +29,17 @@
 		},
 		navMain: [
 			{
-				title: "Dashboard",
+				title: "General",
 				url: "#",
-				icon: DashboardIcon,
+				icon: ClipboardIcon,
 			},
 			{
-				title: "Lifecycle",
+				title: "Focus",
+				url: "#",
+				icon: PhotoSensorIcon,
+			},
+			{
+				title: "History",
 				url: "#",
 				icon: ListDetailsIcon,
 			},
@@ -44,14 +49,9 @@
 				icon: ChartBarIcon,
 			},
 			{
-				title: "Projects",
+				title: "Clinic",
 				url: "#",
-				icon: FolderIcon,
-			},
-			{
-				title: "Team",
-				url: "#",
-				icon: UsersIcon,
+				icon: FaceMaskIcon,
 			},
 		],
 		navClouds: [
@@ -148,8 +148,8 @@
 				<Sidebar.MenuButton class="data-[slot=sidebar-menu-button]:!p-1.5">
 					{#snippet child({ props })}
 						<a href="##" {...props}>
-							<InnerShadowTopIcon class="!size-5" />
-							<span class="text-base font-semibold">Acme Inc.</span>
+							<img src="/konsultulong-icon.png" alt="KonsulTulong Logo" class="h-7 w-7" />
+							<span class="text-base font-semibold">KonsulTulong</span>
 						</a>
 					{/snippet}
 				</Sidebar.MenuButton>
@@ -158,7 +158,6 @@
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<NavMain items={data.navMain} />
-		<NavDocuments items={data.documents} />
 		<NavSecondary items={data.navSecondary} class="mt-auto" />
 	</Sidebar.Content>
 	<Sidebar.Footer>
