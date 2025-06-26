@@ -60,17 +60,6 @@
 </script>
 	
 
-
-<header class="w-full flex items-center justify-end h-12 border-b px-4">
-	<NavigationMenu.Root>
-		<NavigationMenu.List>
-			<NavigationMenu.Item>
-				<NavigationMenu.Link>For Clinics</NavigationMenu.Link>
-			</NavigationMenu.Item>
-		</NavigationMenu.List>
-	</NavigationMenu.Root>
-</header>
-
 <main class="flex h-[80vh] flex-1 flex-col items-center justify-center px-4 py-8">
 	<h1 class="text-4xl md:text-7xl font-bold mb-2 text-center">KonsulTulong</h1>
 	<p class="text-base md:text-xl mb-20 text-center">
