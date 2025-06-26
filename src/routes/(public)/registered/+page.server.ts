@@ -29,5 +29,26 @@ export const actions: Actions = {
 		});
 
 		throw redirect(303, '/dashboard');
+	},
+
+	generateCode: async () => {
+		function randomCode() {
+			const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+			return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+		}
+
+		let code;
+		let exists = true;
+		let attempts = 0;
+		while (exists && attempts < 20) {
+			code = randomCode();
+			const found = await db.select().from(clinic).where(eq(clinic.clinicCode, code));
+			exists = found.length > 0;
+			attempts++;
+		}
+		if (exists) {
+			return { code: '' };
+		}
+		return { code };
 	}
 }; 
