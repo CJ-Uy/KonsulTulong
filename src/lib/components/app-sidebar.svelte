@@ -8,13 +8,11 @@
 	import FileWordIcon from "@tabler/icons-svelte/icons/file-word";
 	import PhotoSensorIcon from "@tabler/icons-svelte/icons/photo-sensor";
 	import HelpIcon from "@tabler/icons-svelte/icons/help";
-	import InnerShadowTopIcon from "@tabler/icons-svelte/icons/inner-shadow-top";
 	import ListDetailsIcon from "@tabler/icons-svelte/icons/list-details";
 	import ReportIcon from "@tabler/icons-svelte/icons/report";
 	import SearchIcon from "@tabler/icons-svelte/icons/search";
 	import SettingsIcon from "@tabler/icons-svelte/icons/settings";
 	import FaceMaskIcon from "@tabler/icons-svelte/icons/face-mask";
-	import NavDocuments from "./nav-documents.svelte";
 	import NavMain from "./nav-main.svelte";
 	import NavSecondary from "./nav-secondary.svelte";
 	import NavUser from "./nav-user.svelte";
@@ -29,28 +27,28 @@
 		},
 		navMain: [
 			{
-				title: "General",
-				url: "#",
+				title: "Today",
+				url: "/dashboard",
 				icon: ClipboardIcon,
 			},
 			{
 				title: "Focus",
-				url: "#",
+				url: "/dashboard/focus",
 				icon: PhotoSensorIcon,
 			},
 			{
 				title: "History",
-				url: "#",
+				url: "/dashboard/history",
 				icon: ListDetailsIcon,
 			},
 			{
 				title: "Analytics",
-				url: "#",
+				url: "/dashboard/analytics",
 				icon: ChartBarIcon,
 			},
 			{
-				title: "Clinic",
-				url: "#",
+				title: "Clinic Settings",
+				url: "/dashboard/clinic-settings",
 				icon: FaceMaskIcon,
 			},
 		],
@@ -147,7 +145,7 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton class="data-[slot=sidebar-menu-button]:!p-1.5">
 					{#snippet child({ props })}
-						<a href="##" {...props}>
+						<a href="/dashboard" {...props}>
 							<img src="/konsultulong-icon.png" alt="KonsulTulong Logo" class="h-7 w-7" />
 							<span class="text-base font-semibold">KonsulTulong</span>
 						</a>

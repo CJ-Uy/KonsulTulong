@@ -19,7 +19,7 @@
 		collapsible?: "offcanvas" | "icon" | "none";
 	} = $props();
 
-	const sidebar = useSidebar();
+	const sidebar = useSidebar() || { isMobile: false, openMobile: false, setOpenMobile: () => {}, state: "", };
 </script>
 
 {#if collapsible === "none"}
