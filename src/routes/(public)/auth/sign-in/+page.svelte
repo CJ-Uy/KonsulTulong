@@ -72,10 +72,10 @@
 
           <div class="grid grid-cols-2 gap-3">
               <Button
-                  type="button"
-                  variant="outline">
-                  <Google width="1em" height="1em" style="margin-right: 0.5em;" />
-                  <span>Google</span>
+                    type="button"
+                    variant="outline">
+                    <Google width="1em" height="1em" style="margin-right: 0.5em;" />
+                    <span>Google</span>
               </Button>
               <Button
                   type="button"
