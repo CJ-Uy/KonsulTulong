@@ -7,10 +7,28 @@
 	import * as Avatar from "$lib/components/ui/avatar/index.js";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
+	import { signOut } from '$lib/auth-client';
+    import { goto } from '$app/navigation';
+
 
 	let { user }: { user: { name: string; email: string; avatar: string } } = $props();
 
 	const sidebar = Sidebar.useSidebar();
+
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		login();
+	};
+
+	const login = async () => {
+		const { data, error } = await signOut({
+			fetchOptions: {
+				onSuccess: () => {
+				goto("/login"); // redirect to login page
+				},
+			},
+		});
+	}
 </script>
 
 <Sidebar.Menu>
@@ -73,7 +91,7 @@
 					</DropdownMenu.Item>
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item>
+				<DropdownMenu.Item onclick={handleSubmit} >
 					<LogoutIcon />
 					Log out
 				</DropdownMenu.Item>
