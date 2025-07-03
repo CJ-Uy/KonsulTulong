@@ -33,7 +33,7 @@
 		}
 	}
 
-	//Single Toggle Question
+	// Single Toggle Question
 	const singleToggleItems = [
 		{ id: "item1", label: "item1" },
 		{ id: "item2", label: "item2" },
@@ -42,14 +42,14 @@
 	];
 </script>
 
-<main>
+<main class="grid grid-cols-1 md:grid-cols-6">
 	<FormNav />
-	<form class="flex flex-col space-y-30 text-center">
+	<form class="flex flex-col space-y-30 text-center md:col-span-5 md:mx-10 md:mt-10">
 		<section
 			class="relative mx-5 my-10 flex flex-col items-center rounded border border-zinc-400 py-25"
 		>
 			<header
-				class="absolute -top-10 flex h-20 w-80 items-center justify-center rounded-md border border-neutral-400 bg-teal-400"
+				class="bg-primary absolute -top-10 flex h-20 w-80 items-center justify-center rounded-md border border-neutral-400"
 			>
 				<p class="text-sm font-bold">I. PERSONAL INFORMATION</p>
 			</header>
@@ -95,7 +95,7 @@
 			class="relative mx-5 my-10 flex flex-col items-center space-y-20 rounded border border-zinc-400 py-25"
 		>
 			<header
-				class="absolute -top-10 flex h-20 w-80 items-center justify-center rounded-md border border-neutral-400 bg-teal-400"
+				class="bg-primary absolute -top-10 flex h-20 w-80 items-center justify-center rounded-md border border-neutral-400"
 			>
 				<p class="text-sm font-bold">II. COMPLAINT</p>
 			</header>
@@ -125,7 +125,7 @@
 			class="relative mx-5 my-10 flex flex-col items-center space-y-20 rounded border border-zinc-400 py-25"
 		>
 			<header
-				class="absolute -top-10 flex h-20 w-80 items-center justify-center rounded-md border border-neutral-400 bg-teal-400"
+				class="bg-primary absolute -top-10 flex h-20 w-80 items-center justify-center rounded-md border border-neutral-400"
 			>
 				<p class="text-sm font-bold">III. OTHER INFORMATION</p>
 			</header>
@@ -137,6 +137,7 @@
 					</Button>
 					<header class="text-2xl font-bold">How long have you been smoking?</header>
 
+					<!-- TODO: FIX TOGGLEGROUP -->
 					<div class="align-center justify-c enter mt-7 flex w-full max-w-200">
 						<ToggleGroup.Root type="single" class="flex flex-col space-y-5 rounded-none">
 							{#each singleToggleItems as item}
@@ -152,6 +153,12 @@
 					</div>
 				</section>
 			</div>
+		</section>
+		<section
+			class="mx-5 my-10 flex flex-col items-center space-y-10 rounded border border-zinc-400 px-5 py-10"
+		>
+			<header class="text-xl font-bold">You've reached the end of the form.</header>
+			<Button class="bg-secondary/50 mx-auto h-16 w-60 text-xl font-bold">Submit Answers</Button>
 		</section>
 	</form>
 </main>
