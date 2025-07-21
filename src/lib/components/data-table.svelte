@@ -1,38 +1,16 @@
 <script lang="ts" module>
 	export const columns: ColumnDef<Schema>[] = [
 		{
-			id: "drag",
-			header: () => null,
-			cell: ({ row }) => renderSnippet(DragHandle, { id: row.original.id }),
+			accessorKey: "caseNum",
+			header: "Case",
 		},
 		{
-			id: "select",
-			header: ({ table }) =>
-				renderComponent(DataTableCheckbox, {
-					checked: table.getIsAllPageRowsSelected(),
-					indeterminate:
-						table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected(),
-					onCheckedChange: (value) => table.toggleAllPageRowsSelected(!!value),
-					"aria-label": "Select all",
-				}),
-			cell: ({ row }) =>
-				renderComponent(DataTableCheckbox, {
-					checked: row.getIsSelected(),
-					onCheckedChange: (value) => row.toggleSelected(!!value),
-					"aria-label": "Select row",
-				}),
-			enableSorting: false,
-			enableHiding: false,
+			accessorKey: "name",
+			header: "Name",
 		},
 		{
-			accessorKey: "header",
-			header: "Header",
-			cell: ({ row }) => renderComponent(DataTableCellViewer, { item: row.original }),
-			enableHiding: false,
-		},
-		{
-			accessorKey: "type",
-			header: "Section Type",
+			accessorKey: "surgicalService",
+			header: "Surgical Service",
 			cell: ({ row }) => renderSnippet(DataTableType, { row }),
 		},
 		{
@@ -41,29 +19,20 @@
 			cell: ({ row }) => renderSnippet(DataTableStatus, { row }),
 		},
 		{
-			accessorKey: "target",
-			header: () =>
-				renderSnippet(
-					createRawSnippet(() => ({
-						render: () => '<div class="w-full text-right">Target</div>',
-					}))
-				),
-			cell: ({ row }) => renderSnippet(DataTableTarget, { row }),
+			accessorKey: "age",
+			header: "Age",
 		},
 		{
-			accessorKey: "limit",
-			header: () =>
-				renderSnippet(
-					createRawSnippet(() => ({
-						render: () => '<div class="w-full text-right">Limit</div>',
-					}))
-				),
-			cell: ({ row }) => renderSnippet(DataTableLimit, { row }),
+			accessorKey: "sex",
+			header: "Sex",
 		},
 		{
-			accessorKey: "reviewer",
-			header: "Reviewer",
-			cell: ({ row }) => renderComponent(DataTableReviewer, { row }),
+			accessorKey: "contact",
+			header: "Contact Number",
+		},
+		{
+			accessorKey: "waitingTime",
+			header: "Time Waited",
 		},
 		{
 			id: "actions",
@@ -106,7 +75,6 @@
 		useSortable,
 		verticalListSortingStrategy,
 	} from "@dnd-kit-svelte/sortable";
-	import { restrictToVerticalAxis } from "@dnd-kit-svelte/modifiers";
 	import { createSvelteTable } from "$lib/components/ui/data-table/data-table.svelte.js";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
@@ -133,10 +101,6 @@
 	import LoaderIcon from "@tabler/icons-svelte/icons/loader";
 	import DotsVerticalIcon from "@tabler/icons-svelte/icons/dots-vertical";
 	import { toast } from "svelte-sonner";
-	import DataTableCheckbox from "./data-table-checkbox.svelte";
-	import DataTableCellViewer from "./data-table-cell-viewer.svelte";
-	import { createRawSnippet } from "svelte";
-	import DataTableReviewer from "./data-table-reviewer.svelte";
 	import { CSS } from "@dnd-kit-svelte/utilities";
 
 	let { data }: { data: Schema[] } = $props();
@@ -146,15 +110,7 @@
 	let rowSelection = $state<RowSelectionState>({});
 	let columnVisibility = $state<VisibilityState>({});
 
-	const sortableId = $props.id();
-
-	const sensors = useSensors(
-		useSensor(MouseSensor, {}),
-		useSensor(TouchSensor, {}),
-		useSensor(KeyboardSensor, {})
-	);
-
-	const dataIds: UniqueIdentifier[] = $derived(data.map((item) => item.id));
+	const dataIds: UniqueIdentifier[] = $derived(data.map((item) => item.caseNum));
 
 	const table = createSvelteTable({
 		get data() {
@@ -178,7 +134,7 @@
 				return columnFilters;
 			},
 		},
-		getRowId: (row) => row.id.toString(),
+		getRowId: (row) => row.caseNum.toString(),
 		enableRowSelection: true,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -223,43 +179,34 @@
 		},
 	});
 
-	function handleDragEnd(event: DragEndEvent) {
-		const { active, over } = event;
-		if (active && over && active.id !== over.id) {
-			const oldIndex = dataIds.indexOf(active.id);
-			const newIndex = dataIds.indexOf(over.id);
-			data = arrayMove(data, oldIndex, newIndex);
-		}
-	}
-
 	let views = [
 		{
-			id: "outline",
-			label: "Outline",
+			id: "queue",
+			label: "In Queue",
 			badge: 0,
 		},
 		{
-			id: "past-performance",
-			label: "Past Performance",
-			badge: 3,
+			id: "today",
+			label: "Today",
+			badge: 0,
 		},
 		{
-			id: "key-personnel",
-			label: "Key Personnel",
-			badge: 2,
+			id: "week",
+			label: "This Week",
+			badge: 0,
 		},
 		{
-			id: "focus-documents",
-			label: "Focus Documents",
+			id: "all-time",
+			label: "All Time",
 			badge: 0,
 		},
 	];
 
-	let view = $state("outline");
+	let view = $state("queue");
 	let viewLabel = $derived(views.find((v) => view === v.id)?.label ?? "Select a view");
 </script>
 
-<Tabs.Root value="outline" class="w-full flex-col justify-start gap-6">
+<Tabs.Root value="queue" class="w-full flex-col justify-start gap-6">
 	<div class="flex items-center justify-between px-4 lg:px-6">
 		<Label for="view-selector" class="sr-only">View</Label>
 		<Select.Root type="single" bind:value={view}>
@@ -284,81 +231,42 @@
 				</Tabs.Trigger>
 			{/each}
 		</Tabs.List>
-		<div class="flex items-center gap-2">
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger>
-					{#snippet child({ props })}
-						<Button variant="outline" size="sm" {...props}>
-							<LayoutColumnsIcon />
-							<span class="hidden lg:inline">Customize Columns</span>
-							<span class="lg:hidden">Columns</span>
-							<ChevronDownIcon />
-						</Button>
-					{/snippet}
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content align="end" class="w-56">
-					{#each table
-						.getAllColumns()
-						.filter((col) => typeof col.accessorFn !== "undefined" && col.getCanHide()) as column (column.id)}
-						<DropdownMenu.CheckboxItem
-							class="capitalize"
-							checked={column.getIsVisible()}
-							onCheckedChange={(value) => column.toggleVisibility(!!value)}
-						>
-							{column.id}
-						</DropdownMenu.CheckboxItem>
-					{/each}
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
-			<Button variant="outline" size="sm">
-				<PlusIcon />
-				<span class="hidden lg:inline">Add Section</span>
-			</Button>
-		</div>
 	</div>
-	<Tabs.Content value="outline" class="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
+	<Tabs.Content value="queue" class="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
 		<div class="overflow-hidden rounded-lg border">
-			<DndContext
-				collisionDetection={closestCenter}
-				modifiers={[restrictToVerticalAxis]}
-				onDragEnd={handleDragEnd}
-				{sensors}
-				id={sortableId}
-			>
-				<Table.Root>
-					<Table.Header class="bg-muted sticky top-0 z-10">
-						{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
-							<Table.Row>
-								{#each headerGroup.headers as header (header.id)}
-									<Table.Head colspan={header.colSpan}>
-										{#if !header.isPlaceholder}
-											<FlexRender
-												content={header.column.columnDef.header}
-												context={header.getContext()}
-											/>
-										{/if}
-									</Table.Head>
-								{/each}
-							</Table.Row>
-						{/each}
-					</Table.Header>
-					<Table.Body class="**:data-[slot=table-cell]:first:w-8">
-						{#if table.getRowModel().rows?.length}
-							<SortableContext items={dataIds} strategy={verticalListSortingStrategy}>
-								{#each table.getRowModel().rows as row (row.id)}
-									{@render DraggableRow({ row })}
-								{/each}
-							</SortableContext>
-						{:else}
-							<Table.Row>
-								<Table.Cell colspan={columns.length} class="h-24 text-center">
-									No results.
-								</Table.Cell>
-							</Table.Row>
-						{/if}
-					</Table.Body>
-				</Table.Root>
-			</DndContext>
+			<Table.Root>
+				<Table.Header class="bg-muted sticky top-0 z-10">
+					{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
+						<Table.Row>
+							{#each headerGroup.headers as header (header.id)}
+								<Table.Head colspan={header.colSpan} class={header.index === 0 ? 'pl-4' : ''}>
+									{#if !header.isPlaceholder}
+										<FlexRender
+											content={header.column.columnDef.header}
+											context={header.getContext()}
+										/>
+									{/if}
+								</Table.Head>
+							{/each}
+						</Table.Row>
+					{/each}
+				</Table.Header>
+				<Table.Body class="**:data-[slot=table-cell]:first:w-8">
+					{#if table.getRowModel().rows?.length}
+						<SortableContext items={dataIds} strategy={verticalListSortingStrategy}>
+							{#each table.getRowModel().rows as row (row.id)}
+								{@render DraggableRow({ row })}
+							{/each}
+						</SortableContext>
+					{:else}
+						<Table.Row>
+							<Table.Cell colspan={columns.length} class="h-24 text-center">
+								No results.
+							</Table.Cell>
+						</Table.Row>
+					{/if}
+				</Table.Body>
+			</Table.Root>
 		</div>
 		<div class="flex items-center justify-between px-4">
 			<div class="text-muted-foreground hidden flex-1 text-sm lg:flex">
@@ -446,50 +354,11 @@
 	</Tabs.Content>
 </Tabs.Root>
 
-{#snippet DataTableLimit({ row }: { row: Row<Schema> })}
-	<form
-		onsubmit={(e) => {
-			e.preventDefault();
-			toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-				loading: `Saving ${row.original.header}`,
-				success: "Done",
-				error: "Error",
-			});
-		}}
-	>
-		<Label for="{row.original.id}-limit" class="sr-only">Limit</Label>
-		<Input
-			class="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-			value={row.original.limit}
-			id="{row.original.id}-limit"
-		/>
-	</form>
-{/snippet}
-
-{#snippet DataTableTarget({ row }: { row: Row<Schema> })}
-	<form
-		onsubmit={(e) => {
-			e.preventDefault();
-			toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-				loading: `Saving ${row.original.header}`,
-				success: "Done",
-				error: "Error",
-			});
-		}}
-	>
-		<Label for="{row.original.id}-target" class="sr-only">Target</Label>
-		<Input
-			class="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-			value={row.original.target}
-			id="{row.original.id}-target"
-		/>
-	</form>
-{/snippet}
 
 {#snippet DataTableType({ row }: { row: Row<Schema> })}
 	<div class="w-32">
 		<Badge variant="outline" class="text-muted-foreground px-1.5">
-			{row.original.type}
+			{row.original.surgicalService}
 		</Badge>
 	</div>
 {/snippet}
@@ -517,9 +386,6 @@
 		</DropdownMenu.Trigger>
 		<DropdownMenu.Content align="end" class="w-32">
 			<DropdownMenu.Item>Edit</DropdownMenu.Item>
-			<DropdownMenu.Item>Make a copy</DropdownMenu.Item>
-			<DropdownMenu.Item>Favorite</DropdownMenu.Item>
-			<DropdownMenu.Separator />
 			<DropdownMenu.Item variant="destructive">Delete</DropdownMenu.Item>
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
@@ -527,7 +393,7 @@
 
 {#snippet DraggableRow({ row }: { row: Row<Schema> })}
 	{@const { transform, transition, node, isDragging } = useSortable({
-		id: () => row.original.id,
+		id: () => row.original.caseNum,
 	})}
 
 	<Table.Row
@@ -539,8 +405,8 @@
 			transform.current
 		)}"
 	>
-		{#each row.getVisibleCells() as cell (cell.id)}
-			<Table.Cell>
+		{#each row.getVisibleCells() as cell, i (cell.id)}
+			<Table.Cell class={i === 0 ? 'pl-4' : ''}>
 				<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 			</Table.Cell>
 		{/each}
