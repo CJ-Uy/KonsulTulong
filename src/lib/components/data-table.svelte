@@ -1,15 +1,23 @@
 <script lang="ts" module>
 	export const columns: ColumnDef<Schema>[] = [
 		{
-			accessorKey: "caseNum",
+			accessorKey: "patientInformation.caseNumber",
 			header: "Case",
 		},
 		{
-			accessorKey: "name",
+			id: "name",
 			header: "Name",
+			cell: ({ row }) => {
+				// row.original is the full data object for this row (AnesthesiaSurveyData)
+				const patientInfo = row.original.patientInformation;
+				const lastName = patientInfo.name.last;
+				const firstName = patientInfo.name.first;
+
+				return `${lastName}, ${firstName}`; // Format the name as "Last, First"
+			},
 		},
 		{
-			accessorKey: "surgicalService",
+			accessorKey: "surgicalDetails.surgicalService",
 			header: "Surgical Service",
 			cell: ({ row }) => renderSnippet(DataTableType, { row }),
 		},
@@ -19,15 +27,15 @@
 			cell: ({ row }) => renderSnippet(DataTableStatus, { row }),
 		},
 		{
-			accessorKey: "age",
+			accessorKey: "patientInformation.age",
 			header: "Age",
 		},
 		{
-			accessorKey: "sex",
+			accessorKey: "patientInformation.sex",
 			header: "Sex",
 		},
 		{
-			accessorKey: "contact",
+			accessorKey: "patientInformation.contactNo",
 			header: "Contact Number",
 		},
 		{
@@ -83,7 +91,6 @@
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
-	import ExpandedView from "./ExpandedView.svelte"
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Select from "$lib/components/ui/select/index.js";
@@ -95,10 +102,6 @@
 		renderComponent,
 		renderSnippet,
 	} from "$lib/components/ui/data-table/index.js";
-	import LayoutColumnsIcon from "@tabler/icons-svelte/icons/layout-columns";
-	import GripVerticalIcon from "@tabler/icons-svelte/icons/grip-vertical";
-	import ChevronDownIcon from "@tabler/icons-svelte/icons/chevron-down";
-	import PlusIcon from "@tabler/icons-svelte/icons/plus";
 	import ChevronsLeftIcon from "@tabler/icons-svelte/icons/chevrons-left";
 	import ChevronLeftIcon from "@tabler/icons-svelte/icons/chevron-left";
 	import ChevronRightIcon from "@tabler/icons-svelte/icons/chevron-right";
@@ -116,7 +119,7 @@
 	let rowSelection = $state<RowSelectionState>({});
 	let columnVisibility = $state<VisibilityState>({});
 
-	const dataIds: UniqueIdentifier[] = $derived(data.map((item) => item.caseNum));
+	const dataIds: UniqueIdentifier[] = $derived(data.map((item) => item.patientInformation.caseNumber));
 
 	const table = createSvelteTable({
 		get data() {
@@ -140,7 +143,6 @@
 				return columnFilters;
 			},
 		},
-		getRowId: (row) => row.caseNum.toString(),
 		enableRowSelection: true,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -364,7 +366,7 @@
 {#snippet DataTableType({ row }: { row: Row<Schema> })}
 	<div class="w-32">
 		<Badge variant="outline" class="text-muted-foreground px-1.5">
-			{row.original.surgicalService}
+			{row.original.surgicalDetails.surgicalService}
 		</Badge>
 	</div>
 {/snippet}
@@ -398,7 +400,7 @@
 
 {#snippet DraggableRow({ row }: { row: Row<Schema> })}
 	{@const { transform, transition, node, isDragging } = useSortable({
-		id: () => row.original.caseNum,
+		id: () => row.original.patientInformation.caseNumber,
 	})}
 
 	<Table.Row
