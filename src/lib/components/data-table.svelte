@@ -44,7 +44,7 @@
 		},
 		{
 			id: "view",
-			cell: () => renderSnippet(DataTableView),
+			cell: ({ row }) => renderSnippet(DataTableView, { row }),
 		},
 		{
 			id: "actions",
@@ -364,9 +364,41 @@
 
 
 {#snippet DataTableType({ row }: { row: Row<Schema> })}
-	<div class="w-32">
+	{@const getService = (serviceObject: typeof row.original.surgicalDetails.surgicalService) => {
+		// A mapping from schema keys to display names
+		const serviceMap = {
+			trauma: "Trauma",
+			gs1: "GS1",
+			gs2: "GS2",
+			gs3: "GS3",
+			urology: "Urology",
+			pedia: "Pedia",
+			burn: "Burn",
+			plasticSurgery: "Plastic Surgery",
+			tcvs: "TCVS",
+			nss: "NSS",
+			orthopedics: "Orthopedics",
+			orl: "ORL",
+			ophtha: "Ophtha",
+			obGyn: "OB-GYN",
+			dentistry: "Dentistry",
+		};
+
+		// Find the first key in the object that has a 'true' value
+		for (const key in serviceObject) {
+			if (Object.prototype.hasOwnProperty.call(serviceObject, key) && serviceObject[key] === true) {
+				// Return the display name from our map, or the key itself as a fallback
+				return serviceMap[key] || key;
+			}
+		}
+
+        // Handle the 'others' text field or return a default
+		return serviceObject.others || 'N/A';
+	}}
+
+	<div class="w-32 truncate">
 		<Badge variant="outline" class="text-muted-foreground px-1.5">
-			{row.original.surgicalDetails.surgicalService}
+			{getService(row.original.surgicalDetails.surgicalService)}
 		</Badge>
 	</div>
 {/snippet}
@@ -420,17 +452,137 @@
 	</Table.Row>
 {/snippet}
 
-{#snippet DataTableView()}
-   <Dialog.Root>
-	<Dialog.Trigger><Button>View</Button></Dialog.Trigger>
-	<Dialog.Content>
-	 <Dialog.Header>
-	  <Dialog.Title>Juan Dela Cruz</Dialog.Title>
-	  <Dialog.Description>
-	   This action cannot be undone. This will permanently delete your account
-	   and remove your data from our servers.
-	  </Dialog.Description>
-	 </Dialog.Header>
-	</Dialog.Content>
-   </Dialog.Root>
+{#snippet DataTableView({ row }: { row: Row<Schema> })}
+	{@const patient = row.original}
+
+	<Dialog.Root>
+		<Dialog.Trigger>
+			<Button variant="outline" size="sm">View</Button>
+		</Dialog.Trigger>
+		<Dialog.Content class="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+			<!-- Top Summary Header -->
+			<Dialog.Header>
+				<Dialog.Title class="text-2xl">
+					{`${patient.patientInformation.name.last}, ${patient.patientInformation.name.first} ${patient.patientInformation.name.middle ?? ''}`}
+				</Dialog.Title>
+				<Dialog.Description>
+					Case #{patient.patientInformation.caseNumber} • {patient.patientInformation.age} years old • {patient.patientInformation.sex}
+				</Dialog.Description>
+			</Dialog.Header>
+
+			<!-- Detailed Information Sections -->
+			<div class="py-4 space-y-6 text-sm">
+
+				<!-- Section: Patient Information -->
+				<section>
+					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Patient Information</h3>
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
+						<div><span class="font-medium text-muted-foreground">Location:</span> {patient.patientInformation.patientLocation ?? 'N/A'}</div>
+						<div><span class="font-medium text-muted-foreground">Date of Birth:</span> {new Date(patient.patientInformation.dateOfBirth).toLocaleDateString()}</div>
+						<div><span class="font-medium text-muted-foreground">Contact No:</span> {patient.patientInformation.contactNo ?? 'N/A'}</div>
+						<div class="col-span-full"><span class="font-medium text-muted-foreground">Address:</span> {patient.patientInformation.address ?? 'N/A'}</div>
+						<div><span class="font-medium text-muted-foreground">Emergency Contact:</span> {patient.patientInformation.emergencyContact.name ?? 'N/A'}</div>
+						<div><span class="font-medium text-muted-foreground">Relationship:</span> {patient.patientInformation.emergencyContact.relationship ?? 'N/A'}</div>
+						<div><span class="font-medium text-muted-foreground">Emergency Contact No:</span> {patient.patientInformation.emergencyContact.contactNo ?? 'N/A'}</div>
+					</div>
+				</section>
+
+				<!-- Section: Surgical Details -->
+				<section>
+					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Surgical Details</h3>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+						<div class="col-span-full"><span class="font-medium text-muted-foreground">Diagnosis:</span> {patient.surgicalDetails.preOperativeDiagnosis ?? 'N/A'}</div>
+						<div class="col-span-full"><span class="font-medium text-muted-foreground">Proposed Plan:</span> {patient.surgicalDetails.proposedSurgicalPlan ?? 'N/A'}</div>
+						<div><span class="font-medium text-muted-foreground">Est. Blood Loss:</span> {patient.surgicalDetails.estimatedBloodLoss ?? 'N/A'}</div>
+					</div>
+				</section>
+				
+				<!-- Section: Pre-Operative History -->
+				<section>
+					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Pre-Operative History</h3>
+					<div class="space-y-4">
+						<div>
+							<h4 class="font-semibold">Allergies</h4>
+							<p>Has Allergies: <span class="font-mono">{patient.preOperativeHistory.allergies.hasAllergies ? 'Yes' : 'No'}</span></p>
+							{#if patient.preOperativeHistory.allergies.hasAllergies}
+								<p>Details: {patient.preOperativeHistory.allergies.details ?? 'N/A'}</p>
+							{/if}
+						</div>
+						<div>
+							<h4 class="font-semibold">Cardiac / Pulmonary</h4>
+							<div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1">
+								<span>High Blood Pressure: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.highBloodPressure ? 'Yes' : 'No'}</span></span>
+								<span>Chest Pain: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.chestPain ? 'Yes' : 'No'}</span></span>
+								<span>Irregular Heart Beat: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.irregularHeartBeat ? 'Yes' : 'No'}</span></span>
+								<span>Heart Disease: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.heartDisease ? 'Yes' : 'No'}</span></span>
+								<span>Heart Attack: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.heartAttack ? 'Yes' : 'No'}</span></span>
+								<span>Difficulty Breathing: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.difficultyOfBreathing ? 'Yes' : 'No'}</span></span>
+								<span>Asthma: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.asthma.hasAsthma ? 'Yes' : 'No'}</span></span>
+							</div>
+						</div>
+						<!-- ... You can continue this pattern for all other history sections ... -->
+					</div>
+				</section>
+
+				<!-- Section: Past Surgical History -->
+				<section>
+					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Past Surgical / Anesthetic History</h3>
+					<div>
+						<h4 class="font-semibold">Previous Surgeries</h4>
+						{#if patient.pastSurgicalHistory.surgeries && patient.pastSurgicalHistory.surgeries.length > 0}
+							<ul class="list-disc pl-5">
+							{#each patient.pastSurgicalHistory.surgeries as surgery}
+								<li>{new Date(surgery.date).toLocaleDateString()}: {surgery.procedure} ({surgery.typeOfAnesthesia}) - Complications: {surgery.complications ?? 'None'}</li>
+							{/each}
+							</ul>
+						{:else}
+							<p>None</p>
+						{/if}
+					</div>
+					<div class="mt-2">
+						<h4 class="font-semibold">Family Anesthesia Complication</h4>
+						<p>Has Complication History: <span class="font-mono">{patient.pastSurgicalHistory.familyAnesthesiaComplication.hasComplication ? 'Yes' : 'No'}</span></p>
+						{#if patient.pastSurgicalHistory.familyAnesthesiaComplication.hasComplication}
+							<p>Details: {patient.pastSurgicalHistory.familyAnesthesiaComplication.specify ?? 'N/A'}</p>
+						{/if}
+					</div>
+				</section>
+
+				<!-- Section: Physical Examination -->
+				<section>
+					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Physical Examination</h3>
+					<div>
+						<h4 class="font-semibold">Vitals</h4>
+						<div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-1">
+							<span>BP: <span class="font-mono">{patient.physicalExamination.vitals.bp ?? 'N/A'}</span></span>
+							<span>HR: <span class="font-mono">{patient.physicalExamination.vitals.hr ?? 'N/A'}</span></span>
+							<span>RR: <span class="font-mono">{patient.physicalExamination.vitals.rr ?? 'N/A'}</span></span>
+							<span>Temp: <span class="font-mono">{patient.physicalExamination.vitals.temp ?? 'N/A'}</span></span>
+							<span>SpO2: <span class="font-mono">{patient.physicalExamination.vitals.spo2 ?? 'N/A'}</span></span>
+							<span>Weight: <span class="font-mono">{patient.physicalExamination.vitals.weightKg ?? 'N/A'} kg</span></span>
+							<span>Height: <span class="font-mono">{patient.physicalExamination.vitals.heightCm ?? 'N/A'} cm</span></span>
+							<span>BMI: <span class="font-mono">{patient.physicalExamination.vitals.bmi ?? 'N/A'}</span></span>
+						</div>
+					</div>
+					<div class="mt-4">
+						<h4 class="font-semibold">ECG</h4>
+						<p>{patient.physicalExamination.findings.ecg ?? 'Not specified.'}</p>
+					</div>
+				</section>
+				
+				<!-- Section: Anesthesia & Clinical Plan -->
+				<section>
+					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Anesthesia Assessment & Plan</h3>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+						<div><span class="font-medium text-muted-foreground">Mallampati Score:</span> {patient.anesthesiaAssessment.airwayDental.mallampati ?? 'N/A'}</div>
+						<div><span class="font-medium text-muted-foreground">Full Neck Extension:</span> {patient.anesthesiaAssessment.airwayDental.fullNeckExtension ? 'Yes' : 'No'}</div>
+						<div><span class="font-medium text-muted-foreground">ASA Score:</span> {patient.clinicalRiskAndPlan.asaScore ?? 'N/A'}</div>
+						<div><span class="font-medium text-muted-foreground">Surgical Risk:</span> {patient.clinicalRiskAndPlan.surgicalRiskProcedure ?? 'N/A'}</div>
+						<div class="col-span-full"><span class="font-medium text-muted-foreground">Cardiac Risk Assessment:</span> {patient.clinicalRiskAndPlan.medicalRiskAssessment.cardiac ?? 'N/A'}</div>
+						<div class="col-span-full"><span class="font-medium text-muted-foreground">Recommendations:</span> {patient.clinicalRiskAndPlan.medicalRiskAssessment.othersRecommendations ?? 'None'}</div>
+					</div>
+				</section>
+			</div>
+		</Dialog.Content>
+	</Dialog.Root>
 {/snippet}
