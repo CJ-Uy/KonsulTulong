@@ -35,6 +35,10 @@
 			header: "Time Waited",
 		},
 		{
+			id: "view",
+			cell: () => renderSnippet(DataTableView),
+		},
+		{
 			id: "actions",
 			cell: () => renderSnippet(DataTableActions),
 		},
@@ -78,6 +82,8 @@
 	import { createSvelteTable } from "$lib/components/ui/data-table/data-table.svelte.js";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
 	import * as Table from "$lib/components/ui/table/index.js";
+	import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import ExpandedView from "./ExpandedView.svelte"
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Select from "$lib/components/ui/select/index.js";
@@ -343,13 +349,13 @@
 			</div>
 		</div>
 	</Tabs.Content>
-	<Tabs.Content value="past-performance" class="flex flex-col px-4 lg:px-6">
+	<Tabs.Content value="today" class="flex flex-col px-4 lg:px-6">
 		<div class="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
 	</Tabs.Content>
-	<Tabs.Content value="key-personnel" class="flex flex-col px-4 lg:px-6">
+	<Tabs.Content value="week" class="flex flex-col px-4 lg:px-6">
 		<div class="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
 	</Tabs.Content>
-	<Tabs.Content value="focus-documents" class="flex flex-col px-4 lg:px-6">
+	<Tabs.Content value="all-time" class="flex flex-col px-4 lg:px-6">
 		<div class="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
 	</Tabs.Content>
 </Tabs.Root>
@@ -384,8 +390,7 @@
 				</Button>
 			{/snippet}
 		</DropdownMenu.Trigger>
-		<DropdownMenu.Content align="end" class="w-32">
-			<DropdownMenu.Item>Edit</DropdownMenu.Item>
+		<DropdownMenu.Content align="end" class="w-32">				
 			<DropdownMenu.Item variant="destructive">Delete</DropdownMenu.Item>
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
@@ -413,17 +418,17 @@
 	</Table.Row>
 {/snippet}
 
-{#snippet DragHandle({ id }: { id: number })}
-	{@const { attributes, listeners } = useSortable({ id: () => id })}
-
-	<Button
-		{...attributes.current}
-		{...listeners.current}
-		variant="ghost"
-		size="icon"
-		class="text-muted-foreground size-7 hover:bg-transparent"
-	>
-		<GripVerticalIcon class="text-muted-foreground size-3" />
-		<span class="sr-only">Drag to reorder</span>
-	</Button>
+{#snippet DataTableView()}
+   <Dialog.Root>
+	<Dialog.Trigger><Button>View</Button></Dialog.Trigger>
+	<Dialog.Content>
+	 <Dialog.Header>
+	  <Dialog.Title>Juan Dela Cruz</Dialog.Title>
+	  <Dialog.Description>
+	   This action cannot be undone. This will permanently delete your account
+	   and remove your data from our servers.
+	  </Dialog.Description>
+	 </Dialog.Header>
+	</Dialog.Content>
+   </Dialog.Root>
 {/snippet}
