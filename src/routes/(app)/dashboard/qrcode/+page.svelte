@@ -4,11 +4,19 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 
 	// Import the QR code library
-	import QRCode from "svelte-qrcode";
+	import { createQrPngDataUrl } from '@svelte-put/qr';
+	import { onMount } from 'svelte';
 
 	// --- Data for the QR Code ---
 	let clinicName: string = "Philippine General Hospital";
 	let registrationUrl: string = "https://konsultulong.com/register/PGH-12345";
+
+	const config = {
+		data: registrationUrl,
+		width: 500,
+		height: 500,
+		backgroundFill: '#f5f3ef',
+	};
 
 	// This variable will hold the HTML element containing the QR code for downloading
 	let qrCodeContainer: HTMLElement;
@@ -17,24 +25,12 @@
 	 * Handles downloading the QR code card as a PNG image.
 	 */
 	function handleDownload() {
-		// Ensure the container element exists before trying to use it
-		if (!qrCodeContainer) {
-			alert("Error: QR Code container not found.");
-			return;
+		if (src != "") {
+			const link = document.createElement("a");
+			link.href = src;
+			link.download = `${clinicName} QR Code.png`;
+			link.click();
 		}
-
-		// Find the <canvas> element that the QRCode component creates
-		const canvas = qrCodeContainer.querySelector("canvas");
-		if (!canvas) {
-			alert("Error: Could not find the QR Code canvas element to download.");
-			return;
-		}
-
-		// Create a temporary link element to trigger the download
-		const link = document.createElement("a");
-		link.download = `${clinicName}-QRCode.png`; // Set the filename
-		link.href = canvas.toDataURL("image/png"); // Convert canvas to a PNG data URL
-		link.click(); // Programmatically click the link to start the download
 	}
 
 	/**
@@ -43,6 +39,14 @@
 	function handlePrint() {
 		window.print();
 	}
+
+	/**
+	 * Loads the QR Code.
+	 */
+	let src = '';
+	onMount(async () => {
+		src = await createQrPngDataUrl(config);
+	});
 </script>
 
 <!-- The main container that fills the page -->
@@ -62,7 +66,7 @@
                     class="flex h-full w-full items-center justify-center p-4 md:p-8"
                     bind:this={qrCodeContainer}
                 >
-                    <QRCode background="#f5f3ef" value={registrationUrl} size={320} />
+					<img {src} width="300" height="300" alt="a qr code" />
                 </div>
 			</Card.Content>
 		</Card.Root>
