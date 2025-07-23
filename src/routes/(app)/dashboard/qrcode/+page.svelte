@@ -57,9 +57,13 @@
 			<!-- We bind the content area to our variable so we can find the canvas inside it -->
 			<Card.Content
 				class="flex flex-1 items-center justify-center p-4 md:p-8"
-				bind:this={qrCodeContainer}
 			>
-				<QRCode background="#f5f3ef" value={registrationUrl} size={320} />
+                <div
+                    class="flex h-full w-full items-center justify-center p-4 md:p-8"
+                    bind:this={qrCodeContainer}
+                >
+                    <QRCode background="#f5f3ef" value={registrationUrl} size={320} />
+                </div>
 			</Card.Content>
 		</Card.Root>
 
