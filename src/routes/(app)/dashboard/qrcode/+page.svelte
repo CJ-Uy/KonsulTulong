@@ -58,22 +58,14 @@
 				<Card.Title class="text-2xl">{clinicName}</Card.Title>
 				<Card.Description>Scan the code with your phone's camera to begin.</Card.Description>
 			</Card.Header>
-			<!-- We bind the content area to our variable so we can find the canvas inside it -->
-			<Card.Content
-				class="flex flex-1 items-center justify-center p-4 md:p-8"
-			>
-                <div
-                    class="flex h-full w-full items-center justify-center p-4 md:p-8"
-                    bind:this={qrCodeContainer}
-                >
+			<Card.Content class="flex flex-1 items-center justify-center p-4 md:p-8">
+                <div class="flex h-full w-full items-center justify-center p-4 md:p-8">
 					<img {src} width="300" height="300" alt="a qr code" />
                 </div>
 			</Card.Content>
 		</Card.Root>
 
-		<!-- ====================================================================== -->
-		<!-- Card Two: Controls & Instructions (This is the updated section) -->
-		<!-- ====================================================================== -->
+		<!-- Card Two: Controls & Instructions -->
 		<Card.Root class="flex flex-col print:hidden">
 			<Card.Header>
 				<Card.Title class="text-2xl">Controls & Instructions</Card.Title>
@@ -81,10 +73,10 @@
 			<Card.Content class="space-y-8 pt-2">
 				<div class="space-y-3">
 					<h3 class="font-semibold text-foreground">Export Options</h3>
-					<div class="flex items-center gap-4">
+					<div class="flex flex-wrap items-center gap-4">
 						<Button onclick={handleDownload}>Download as PNG</Button>
 						<Button onclick={handlePrint}>Print as PDF</Button>
-					</div>
+					</div>	
 				</div>
 				<div class="space-y-3">
 					<h3 class="font-semibold text-foreground">Instructions for Staff</h3>
