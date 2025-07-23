@@ -13,6 +13,7 @@
 	import SearchIcon from "@tabler/icons-svelte/icons/search";
 	import SettingsIcon from "@tabler/icons-svelte/icons/settings";
 	import FaceMaskIcon from "@tabler/icons-svelte/icons/face-mask";
+	import IconQrcode from '@tabler/icons-svelte/icons/qrcode';
 	import NavMain from "./nav-main.svelte";
 	import NavSecondary from "./nav-secondary.svelte";
 	import NavUser from "./nav-user.svelte";
@@ -37,11 +38,6 @@
 				icon: PhotoSensorIcon,
 			},
 			{
-				title: "History",
-				url: "/dashboard/history",
-				icon: ListDetailsIcon,
-			},
-			{
 				title: "Analytics",
 				url: "/dashboard/analytics",
 				icon: ChartBarIcon,
@@ -51,6 +47,11 @@
 				url: "/dashboard/clinic-settings",
 				icon: FaceMaskIcon,
 			},
+			{
+				title: "QR Code",
+				url: "/dashboard/qrcode",
+				icon: IconQrcode,
+			}
 		],
 		navClouds: [
 			{
