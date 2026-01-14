@@ -1,26 +1,26 @@
-import { redirect, fail } from '@sveltejs/kit';
-import { db } from '$lib/db';
-import { clinic } from '$lib/db/schema';
-import type { Actions } from './$types';
-import { eq } from 'drizzle-orm';
+import { redirect, fail } from "@sveltejs/kit";
+import { db } from "$lib/db";
+import { clinic } from "$lib/db/schema";
+import type { Actions } from "./$types";
+import { eq } from "drizzle-orm";
 
 export const actions: Actions = {
 	createClinic: async ({ request }) => {
 		const formData = await request.formData();
-		const clinicName = formData.get('clinicName');
-		const clinicCode = formData.get('clinicCode');
+		const clinicName = formData.get("clinicName");
+		const clinicCode = formData.get("clinicCode");
 
-		if (!clinicName || typeof clinicName !== 'string' || clinicName.trim().length < 2) {
-			return fail(400, { error: 'Clinic name is required and must be at least 2 characters.' });
+		if (!clinicName || typeof clinicName !== "string" || clinicName.trim().length < 2) {
+			return fail(400, { error: "Clinic name is required and must be at least 2 characters." });
 		}
-		if (!clinicCode || typeof clinicCode !== 'string' || clinicCode.length !== 6) {
-			return fail(400, { error: 'Clinic code must be exactly 6 characters.' });
+		if (!clinicCode || typeof clinicCode !== "string" || clinicCode.length !== 6) {
+			return fail(400, { error: "Clinic code must be exactly 6 characters." });
 		}
 
 		// Check for code uniqueness
 		const existing = await db.select().from(clinic).where(eq(clinic.clinicCode, clinicCode));
 		if (existing.length > 0) {
-			return fail(400, { error: 'Clinic code already exists. Please randomize again.' });
+			return fail(400, { error: "Clinic code already exists. Please randomize again." });
 		}
 
 		await db.insert(clinic).values({
@@ -28,13 +28,15 @@ export const actions: Actions = {
 			clinicCode
 		});
 
-		throw redirect(303, '/dashboard');
+		throw redirect(303, "/dashboard");
 	},
 
 	generateCode: async () => {
 		function randomCode() {
-			const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-			return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+			const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+			return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join(
+				""
+			);
 		}
 
 		let code;
@@ -47,8 +49,8 @@ export const actions: Actions = {
 			attempts++;
 		}
 		if (exists) {
-			return { code: '' };
+			return { code: "" };
 		}
 		return { code };
 	}
-}; 
+};

@@ -98,7 +98,7 @@
 		{ date: new Date("2024-06-27"), desktop: 448, mobile: 490 },
 		{ date: new Date("2024-06-28"), desktop: 149, mobile: 200 },
 		{ date: new Date("2024-06-29"), desktop: 103, mobile: 160 },
-		{ date: new Date("2024-06-30"), desktop: 446, mobile: 400 },
+		{ date: new Date("2024-06-30"), desktop: 446, mobile: 400 }
 	];
 
 	let timeRange = $state("90d");
@@ -133,7 +133,7 @@
 
 	const chartConfig = {
 		desktop: { label: "Desktop", color: "var(--primary)" },
-		mobile: { label: "Mobile", color: "var(--primary)" },
+		mobile: { label: "Mobile", color: "var(--primary)" }
 	} satisfies Chart.ChartConfig;
 </script>
 
@@ -141,7 +141,7 @@
 	<Card.Header>
 		<Card.Title>Total Visitors</Card.Title>
 		<Card.Description>
-			<span class="@[540px]/card:block hidden"> Total for the last 3 months </span>
+			<span class="hidden @[540px]/card:block"> Total for the last 3 months </span>
 			<span class="@[540px]/card:hidden">Last 3 months</span>
 		</Card.Description>
 		<Card.Action>
@@ -149,7 +149,7 @@
 				type="single"
 				bind:value={timeRange}
 				variant="outline"
-				class="@[767px]/card:flex hidden *:data-[slot=toggle-group-item]:!px-4"
+				class="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
 			>
 				<ToggleGroup.Item value="90d">Last 3 months</ToggleGroup.Item>
 				<ToggleGroup.Item value="30d">Last 30 days</ToggleGroup.Item>
@@ -158,7 +158,7 @@
 			<Select.Root type="single" bind:value={timeRange}>
 				<Select.Trigger
 					size="sm"
-					class="**:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden flex w-40"
+					class="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
 					aria-label="Select a value"
 				>
 					<span data-slot="select-value">
@@ -184,13 +184,13 @@
 					{
 						key: "mobile",
 						label: "Mobile",
-						color: chartConfig.mobile.color,
+						color: chartConfig.mobile.color
 					},
 					{
 						key: "desktop",
 						label: "Desktop",
-						color: chartConfig.desktop.color,
-					},
+						color: chartConfig.desktop.color
+					}
 				]}
 				seriesLayout="stack"
 				props={{
@@ -198,42 +198,30 @@
 						curve: curveNatural,
 						"fill-opacity": 0.4,
 						line: { class: "stroke-1" },
-						motion: "tween",
+						motion: "tween"
 					},
 					xAxis: {
 						ticks: timeRange === "7d" ? 7 : undefined,
 						format: (v) => {
 							return v.toLocaleDateString("en-US", {
 								month: "short",
-								day: "numeric",
+								day: "numeric"
 							});
-						},
+						}
 					},
 
-					yAxis: { format: () => "" },
+					yAxis: { format: () => "" }
 				}}
 			>
 				{#snippet marks({ series, getAreaProps })}
 					<defs>
 						<linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-							<stop
-								offset="5%"
-								stop-color="var(--color-desktop)"
-								stop-opacity={1.0}
-							/>
-							<stop
-								offset="95%"
-								stop-color="var(--color-desktop)"
-								stop-opacity={0.1}
-							/>
+							<stop offset="5%" stop-color="var(--color-desktop)" stop-opacity={1.0} />
+							<stop offset="95%" stop-color="var(--color-desktop)" stop-opacity={0.1} />
 						</linearGradient>
 						<linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
 							<stop offset="5%" stop-color="var(--color-mobile)" stop-opacity={0.8} />
-							<stop
-								offset="95%"
-								stop-color="var(--color-mobile)"
-								stop-opacity={0.1}
-							/>
+							<stop offset="95%" stop-color="var(--color-mobile)" stop-opacity={0.1} />
 						</linearGradient>
 					</defs>
 					{#each series as s, i (s.key)}
@@ -248,7 +236,7 @@
 						labelFormatter={(v: Date) => {
 							return v.toLocaleDateString("en-US", {
 								month: "short",
-								day: "numeric",
+								day: "numeric"
 							});
 						}}
 						indicator="line"

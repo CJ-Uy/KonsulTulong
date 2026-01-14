@@ -13,15 +13,15 @@ async function main() {
 		name: "Basic Questions",
 		description: "A set of sample generic questions",
 		questions: sampleQuestions
-    });
-    console.log("Created basic questions template")
+	});
+	console.log("Created basic questions template");
 
 	// Create a clinic
 	const newClinic = await db.insert(clinic).values({
 		clinicCode: "18B0CS",
 		activeTemplateId: newTemplate.id
 	});
-    console.log("Created a Clinic w/ code: 18B0CS");
+	console.log("Created a Clinic w/ code: 18B0CS");
 
 	// Create a doctor
 	let firstName = faker.person.firstName();

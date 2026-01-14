@@ -8,13 +8,12 @@
 	let { children } = $props();
 </script>
 
-<div class="min-h-screen flex flex-col">
+<div class="flex min-h-screen flex-col">
 	<Header />
 
-	<div class="flex-1 flex flex-col">
+	<div class="flex flex-1 flex-col">
 		{@render children()}
 	</div>
 
 	<Footer />
 </div>
-

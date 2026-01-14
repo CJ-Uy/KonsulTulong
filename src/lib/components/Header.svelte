@@ -3,17 +3,16 @@
 	import { page } from "$app/state";
 </script>
 
-<header class="w-full flex items-center justify-end h-12 border-b px-4">
-    <NavigationMenu.Root>
-        <NavigationMenu.List>
-            <NavigationMenu.Item>
-                {#if page.url.pathname === "/(public)" || page.url.pathname === "/"}
-                    <NavigationMenu.Link href="/landing">For Clinics</NavigationMenu.Link>
-                {:else}
-                    <NavigationMenu.Link href="/">For Patients</NavigationMenu.Link>
-                {/if}
-            </NavigationMenu.Item>
-        </NavigationMenu.List>
-    </NavigationMenu.Root>
+<header class="flex h-12 w-full items-center justify-end border-b px-4">
+	<NavigationMenu.Root>
+		<NavigationMenu.List>
+			<NavigationMenu.Item>
+				{#if page.url.pathname === "/(public)" || page.url.pathname === "/"}
+					<NavigationMenu.Link href="/landing">For Clinics</NavigationMenu.Link>
+				{:else}
+					<NavigationMenu.Link href="/">For Patients</NavigationMenu.Link>
+				{/if}
+			</NavigationMenu.Item>
+		</NavigationMenu.List>
+	</NavigationMenu.Root>
 </header>
-	

@@ -46,7 +46,7 @@ export const response = pgTable("responses", {
 	templateId: cuid2("template_id")
 		.notNull()
 		.references(() => template.id),
-	values: jsonb("values").notNull(),
+	values: jsonb("values").notNull()
 });
 
 // --- Join Tables ---

@@ -3,11 +3,9 @@
 	import SiteHeader from "$lib/components/site-header.svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import { useSession } from "$lib/auth-client";
-  
+
 	let { children } = $props();
 	const session = useSession();
-
-	
 </script>
 
 <Sidebar.Provider

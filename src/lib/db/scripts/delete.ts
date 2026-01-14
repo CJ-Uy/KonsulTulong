@@ -1,4 +1,4 @@
-import { db } from ".."; 
+import { db } from "..";
 import * as schema from "../schema";
 
 async function countdown(seconds: number) {

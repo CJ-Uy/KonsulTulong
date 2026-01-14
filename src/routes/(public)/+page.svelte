@@ -58,14 +58,17 @@
 		}
 	});
 </script>
-	
 
 <main class="flex h-[80vh] flex-1 flex-col items-center justify-center px-4 py-8">
-	<h1 class="text-4xl md:text-7xl font-bold mb-2 text-center">KonsulTulong</h1>
-	<p class="text-base md:text-xl mb-20 text-center">
+	<h1 class="mb-2 text-center text-4xl font-bold md:text-7xl">KonsulTulong</h1>
+	<p class="mb-20 text-center text-base md:text-xl">
 		Start consultation through a 6-digit number or by scanning a QR code.
 	</p>
-	<form method="POST" class="flex flex-col items-center space-y-6 w-full max-w-xs md:max-w-md" use:enhance>
+	<form
+		method="POST"
+		class="flex w-full max-w-xs flex-col items-center space-y-6 md:max-w-md"
+		use:enhance
+	>
 		<Form.Field {form} name="pin" class="flex flex-col items-center">
 			<Form.Control>
 				{#snippet children({ props })}
@@ -86,15 +89,25 @@
 	</form>
 
 	<!-- Divider and QR code section, only on mobile/tablet -->
-	<div class="w-full flex flex-col items-center mt-8 md:hidden">
-		<hr class="w-full my-6 border-t" />
-		<button class="mt-8 border rounded-lg px-8 py-6 flex flex-col items-center shadow-sm bg-white">
-			<span class="font-semibold mb-2">QR Code</span>
+	<div class="mt-8 flex w-full flex-col items-center md:hidden">
+		<hr class="my-6 w-full border-t" />
+		<button class="mt-8 flex flex-col items-center rounded-lg border bg-white px-8 py-6 shadow-sm">
+			<span class="mb-2 font-semibold">QR Code</span>
 			<!-- Replace with your QR code icon component if you have one -->
-			<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h4v4H4V4zm0 12h4v4H4v-4zm12-12h4v4h-4V4zm0 12h4v4h-4v-4z" />
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-8 w-8 text-gray-700"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M4 4h4v4H4V4zm0 12h4v4H4v-4zm12-12h4v4h-4V4zm0 12h4v4h-4v-4z"
+				/>
 			</svg>
 		</button>
 	</div>
 </main>
-

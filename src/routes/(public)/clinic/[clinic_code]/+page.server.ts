@@ -12,7 +12,7 @@ export const load: PageServerLoad = ({ params }) => {
 				text: "What is your first name?",
 				type: "short_answer",
 				required: true,
-                placeholder: "Click Me"
+				placeholder: "Click Me"
 			},
 			{
 				id: "last_name",

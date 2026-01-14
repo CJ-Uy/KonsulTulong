@@ -13,7 +13,8 @@
 	import SearchIcon from "@tabler/icons-svelte/icons/search";
 	import SettingsIcon from "@tabler/icons-svelte/icons/settings";
 	import FaceMaskIcon from "@tabler/icons-svelte/icons/face-mask";
-	import IconQrcode from '@tabler/icons-svelte/icons/qrcode';
+	import IconQrcode from "@tabler/icons-svelte/icons/qrcode";
+	import FormsIcon from "@tabler/icons-svelte/icons/forms";
 	import NavMain from "./nav-main.svelte";
 	import NavSecondary from "./nav-secondary.svelte";
 	import NavUser from "./nav-user.svelte";
@@ -24,33 +25,38 @@
 		user: {
 			name: "shadcn",
 			email: "m@example.com",
-			avatar: "/avatars/shadcn.png",
+			avatar: "/avatars/shadcn.png"
 		},
 		navMain: [
 			{
 				title: "Today",
 				url: "/dashboard",
-				icon: ClipboardIcon,
+				icon: ClipboardIcon
 			},
 			{
 				title: "Focus",
 				url: "/dashboard/focus",
-				icon: PhotoSensorIcon,
+				icon: PhotoSensorIcon
 			},
 			{
 				title: "Analytics",
 				url: "/dashboard/analytics",
-				icon: ChartBarIcon,
+				icon: ChartBarIcon
 			},
 			{
 				title: "Clinic Settings",
 				url: "/dashboard/clinic-settings",
-				icon: FaceMaskIcon,
+				icon: FaceMaskIcon
 			},
 			{
 				title: "QR Code",
 				url: "/dashboard/qrcode",
-				icon: IconQrcode,
+				icon: IconQrcode
+			},
+			{
+				title: "Form Builder",
+				url: "/dashboard/forms",
+				icon: FormsIcon
 			}
 		],
 		navClouds: [
@@ -62,13 +68,13 @@
 				items: [
 					{
 						title: "Active Proposals",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Archived",
-						url: "#",
-					},
-				],
+						url: "#"
+					}
+				]
 			},
 			{
 				title: "Proposal",
@@ -77,13 +83,13 @@
 				items: [
 					{
 						title: "Active Proposals",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Archived",
-						url: "#",
-					},
-				],
+						url: "#"
+					}
+				]
 			},
 			{
 				title: "Prompts",
@@ -92,49 +98,49 @@
 				items: [
 					{
 						title: "Active Proposals",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Archived",
-						url: "#",
-					},
-				],
-			},
+						url: "#"
+					}
+				]
+			}
 		],
 		navSecondary: [
 			{
 				title: "Settings",
 				url: "#",
-				icon: SettingsIcon,
+				icon: SettingsIcon
 			},
 			{
 				title: "Get Help",
 				url: "#",
-				icon: HelpIcon,
+				icon: HelpIcon
 			},
 			{
 				title: "Search",
 				url: "#",
-				icon: SearchIcon,
-			},
+				icon: SearchIcon
+			}
 		],
 		documents: [
 			{
 				name: "Data Library",
 				url: "#",
-				icon: DatabaseIcon,
+				icon: DatabaseIcon
 			},
 			{
 				name: "Reports",
 				url: "#",
-				icon: ReportIcon,
+				icon: ReportIcon
 			},
 			{
 				name: "Word Assistant",
 				url: "#",
-				icon: FileWordIcon,
-			},
-		],
+				icon: FileWordIcon
+			}
+		]
 	};
 
 	let { ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();

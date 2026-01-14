@@ -36,7 +36,7 @@
 
 <div class="mx-auto mt-10 max-w-lg rounded-lg bg-white p-6 shadow-md">
 	<h1 class="mb-4 text-2xl font-bold text-gray-800">Upload a File</h1>
-    <form onsubmit={uploadFile} class="space-y-4">
+	<form onsubmit={uploadFile} class="space-y-4">
 		<div>
 			<label for="file" class="mb-2 block text-sm font-medium text-gray-700">
 				Select a file:

@@ -2,7 +2,7 @@
 	export const columns: ColumnDef<Schema>[] = [
 		{
 			accessorKey: "patientInformation.caseNumber",
-			header: "Case",
+			header: "Case"
 		},
 		{
 			id: "name",
@@ -14,42 +14,42 @@
 				const firstName = patientInfo.name.first;
 
 				return `${lastName}, ${firstName}`; // Format the name as "Last, First"
-			},
+			}
 		},
 		{
 			accessorKey: "surgicalDetails.surgicalService",
 			header: "Surgical Service",
-			cell: ({ row }) => renderSnippet(DataTableType, { row }),
+			cell: ({ row }) => renderSnippet(DataTableType, { row })
 		},
 		{
 			accessorKey: "status",
 			header: "Status",
-			cell: ({ row }) => renderSnippet(DataTableStatus, { row }),
+			cell: ({ row }) => renderSnippet(DataTableStatus, { row })
 		},
 		{
 			accessorKey: "patientInformation.age",
-			header: "Age",
+			header: "Age"
 		},
 		{
 			accessorKey: "patientInformation.sex",
-			header: "Sex",
+			header: "Sex"
 		},
 		{
 			accessorKey: "patientInformation.contactNo",
-			header: "Contact Number",
+			header: "Contact Number"
 		},
 		{
 			accessorKey: "waitingTime",
-			header: "Time Waited",
+			header: "Time Waited"
 		},
 		{
 			id: "view",
-			cell: ({ row }) => renderSnippet(DataTableView, { row }),
+			cell: ({ row }) => renderSnippet(DataTableView, { row })
 		},
 		{
 			id: "actions",
-			cell: () => renderSnippet(DataTableActions),
-		},
+			cell: () => renderSnippet(DataTableActions)
+		}
 	];
 </script>
 
@@ -67,7 +67,7 @@
 		type Row,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
+		type VisibilityState
 	} from "@tanstack/table-core";
 	import type { Schema } from "./schemas.js";
 	import {
@@ -79,13 +79,13 @@
 		type DragEndEvent,
 		type UniqueIdentifier,
 		DndContext,
-		closestCenter,
+		closestCenter
 	} from "@dnd-kit-svelte/core";
 	import {
 		arrayMove,
 		SortableContext,
 		useSortable,
-		verticalListSortingStrategy,
+		verticalListSortingStrategy
 	} from "@dnd-kit-svelte/sortable";
 	import { createSvelteTable } from "$lib/components/ui/data-table/data-table.svelte.js";
 	import * as Tabs from "$lib/components/ui/tabs/index.js";
@@ -100,7 +100,7 @@
 	import {
 		FlexRender,
 		renderComponent,
-		renderSnippet,
+		renderSnippet
 	} from "$lib/components/ui/data-table/index.js";
 	import ChevronsLeftIcon from "@tabler/icons-svelte/icons/chevrons-left";
 	import ChevronLeftIcon from "@tabler/icons-svelte/icons/chevron-left";
@@ -119,7 +119,9 @@
 	let rowSelection = $state<RowSelectionState>({});
 	let columnVisibility = $state<VisibilityState>({});
 
-	const dataIds: UniqueIdentifier[] = $derived(data.map((item) => item.patientInformation.caseNumber));
+	const dataIds: UniqueIdentifier[] = $derived(
+		data.map((item) => item.patientInformation.caseNumber)
+	);
 
 	const table = createSvelteTable({
 		get data() {
@@ -141,7 +143,7 @@
 			},
 			get columnFilters() {
 				return columnFilters;
-			},
+			}
 		},
 		enableRowSelection: true,
 		getCoreRowModel: getCoreRowModel(),
@@ -184,30 +186,30 @@
 			} else {
 				rowSelection = updater;
 			}
-		},
+		}
 	});
 
 	let views = [
 		{
 			id: "queue",
 			label: "In Queue",
-			badge: 0,
+			badge: 0
 		},
 		{
 			id: "today",
 			label: "Today",
-			badge: 0,
+			badge: 0
 		},
 		{
 			id: "week",
 			label: "This Week",
-			badge: 0,
+			badge: 0
 		},
 		{
 			id: "all-time",
 			label: "All Time",
-			badge: 0,
-		},
+			badge: 0
+		}
 	];
 
 	let view = $state("queue");
@@ -218,7 +220,7 @@
 	<div class="flex items-center justify-between px-4 lg:px-6">
 		<Label for="view-selector" class="sr-only">View</Label>
 		<Select.Root type="single" bind:value={view}>
-			<Select.Trigger class="@4xl/main:hidden flex w-fit" size="sm" id="view-selector">
+			<Select.Trigger class="flex w-fit @4xl/main:hidden" size="sm" id="view-selector">
 				{viewLabel}
 			</Select.Trigger>
 			<Select.Content>
@@ -228,7 +230,7 @@
 			</Select.Content>
 		</Select.Root>
 		<Tabs.List
-			class="**:data-[slot=badge]:bg-muted-foreground/30 **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex hidden"
+			class="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex"
 		>
 			{#each views as view (view.id)}
 				<Tabs.Trigger value={view.id}>
@@ -247,7 +249,7 @@
 					{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 						<Table.Row>
 							{#each headerGroup.headers as header (header.id)}
-								<Table.Head colspan={header.colSpan} class={header.index === 0 ? 'pl-4' : ''}>
+								<Table.Head colspan={header.colSpan} class={header.index === 0 ? "pl-4" : ""}>
 									{#if !header.isPlaceholder}
 										<FlexRender
 											content={header.column.columnDef.header}
@@ -268,9 +270,7 @@
 						</SortableContext>
 					{:else}
 						<Table.Row>
-							<Table.Cell colspan={columns.length} class="h-24 text-center">
-								No results.
-							</Table.Cell>
+							<Table.Cell colspan={columns.length} class="h-24 text-center">No results.</Table.Cell>
 						</Table.Row>
 					{/if}
 				</Table.Body>
@@ -287,8 +287,7 @@
 					<Select.Root
 						type="single"
 						bind:value={
-							() => `${table.getState().pagination.pageSize}`,
-							(v) => table.setPageSize(Number(v))
+							() => `${table.getState().pagination.pageSize}`, (v) => table.setPageSize(Number(v))
 						}
 					>
 						<Select.Trigger size="sm" class="w-20" id="rows-per-page">
@@ -362,7 +361,6 @@
 	</Tabs.Content>
 </Tabs.Root>
 
-
 {#snippet DataTableType({ row }: { row: Row<Schema> })}
 	{@const getService = (serviceObject: typeof row.original.surgicalDetails.surgicalService) => {
 		// A mapping from schema keys to display names
@@ -381,7 +379,7 @@
 			orl: "ORL",
 			ophtha: "Ophtha",
 			obGyn: "OB-GYN",
-			dentistry: "Dentistry",
+			dentistry: "Dentistry"
 		};
 
 		// Find the first key in the object that has a 'true' value
@@ -392,8 +390,8 @@
 			}
 		}
 
-        // Handle the 'others' text field or return a default
-		return serviceObject.others || 'N/A';
+		// Handle the 'others' text field or return a default
+		return serviceObject.others || "N/A";
 	}}
 
 	<div class="w-32 truncate">
@@ -424,7 +422,7 @@
 				</Button>
 			{/snippet}
 		</DropdownMenu.Trigger>
-		<DropdownMenu.Content align="end" class="w-32">				
+		<DropdownMenu.Content align="end" class="w-32">
 			<DropdownMenu.Item variant="destructive">Delete</DropdownMenu.Item>
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
@@ -432,7 +430,7 @@
 
 {#snippet DraggableRow({ row }: { row: Row<Schema> })}
 	{@const { transform, transition, node, isDragging } = useSortable({
-		id: () => row.original.patientInformation.caseNumber,
+		id: () => row.original.patientInformation.caseNumber
 	})}
 
 	<Table.Row
@@ -440,12 +438,10 @@
 		data-dragging={isDragging.current}
 		bind:ref={node.current}
 		class="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
-		style="transition: {transition.current}; transform: {CSS.Transform.toString(
-			transform.current
-		)}"
+		style="transition: {transition.current}; transform: {CSS.Transform.toString(transform.current)}"
 	>
 		{#each row.getVisibleCells() as cell, i (cell.id)}
-			<Table.Cell class={i === 0 ? 'pl-4' : ''}>
+			<Table.Cell class={i === 0 ? "pl-4" : ""}>
 				<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 			</Table.Cell>
 		{/each}
@@ -459,65 +455,137 @@
 		<Dialog.Trigger>
 			<Button variant="outline" size="sm">View</Button>
 		</Dialog.Trigger>
-		<Dialog.Content class="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+		<Dialog.Content class="max-h-[90vh] overflow-y-auto sm:max-w-4xl">
 			<!-- Top Summary Header -->
 			<Dialog.Header>
 				<Dialog.Title class="text-2xl">
-					{`${patient.patientInformation.name.last}, ${patient.patientInformation.name.first} ${patient.patientInformation.name.middle ?? ''}`}
+					{`${patient.patientInformation.name.last}, ${patient.patientInformation.name.first} ${patient.patientInformation.name.middle ?? ""}`}
 				</Dialog.Title>
 				<Dialog.Description>
-					Case #{patient.patientInformation.caseNumber} • {patient.patientInformation.age} years old • {patient.patientInformation.sex}
+					Case #{patient.patientInformation.caseNumber} • {patient.patientInformation.age} years old
+					• {patient.patientInformation.sex}
 				</Dialog.Description>
 			</Dialog.Header>
 
 			<!-- Detailed Information Sections -->
-			<div class="py-4 space-y-6 text-sm">
-
+			<div class="space-y-6 py-4 text-sm">
 				<!-- Section: Patient Information -->
 				<section>
-					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Patient Information</h3>
-					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
-						<div><span class="font-medium text-muted-foreground">Location:</span> {patient.patientInformation.patientLocation ?? 'N/A'}</div>
-						<div><span class="font-medium text-muted-foreground">Date of Birth:</span> {new Date(patient.patientInformation.dateOfBirth).toLocaleDateString()}</div>
-						<div><span class="font-medium text-muted-foreground">Contact No:</span> {patient.patientInformation.contactNo ?? 'N/A'}</div>
-						<div class="col-span-full"><span class="font-medium text-muted-foreground">Address:</span> {patient.patientInformation.address ?? 'N/A'}</div>
-						<div><span class="font-medium text-muted-foreground">Emergency Contact:</span> {patient.patientInformation.emergencyContact.name ?? 'N/A'}</div>
-						<div><span class="font-medium text-muted-foreground">Relationship:</span> {patient.patientInformation.emergencyContact.relationship ?? 'N/A'}</div>
-						<div><span class="font-medium text-muted-foreground">Emergency Contact No:</span> {patient.patientInformation.emergencyContact.contactNo ?? 'N/A'}</div>
+					<h3 class="mb-3 border-b pb-2 text-lg font-semibold">Patient Information</h3>
+					<div class="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2 lg:grid-cols-3">
+						<div>
+							<span class="text-muted-foreground font-medium">Location:</span>
+							{patient.patientInformation.patientLocation ?? "N/A"}
+						</div>
+						<div>
+							<span class="text-muted-foreground font-medium">Date of Birth:</span>
+							{new Date(patient.patientInformation.dateOfBirth).toLocaleDateString()}
+						</div>
+						<div>
+							<span class="text-muted-foreground font-medium">Contact No:</span>
+							{patient.patientInformation.contactNo ?? "N/A"}
+						</div>
+						<div class="col-span-full">
+							<span class="text-muted-foreground font-medium">Address:</span>
+							{patient.patientInformation.address ?? "N/A"}
+						</div>
+						<div>
+							<span class="text-muted-foreground font-medium">Emergency Contact:</span>
+							{patient.patientInformation.emergencyContact.name ?? "N/A"}
+						</div>
+						<div>
+							<span class="text-muted-foreground font-medium">Relationship:</span>
+							{patient.patientInformation.emergencyContact.relationship ?? "N/A"}
+						</div>
+						<div>
+							<span class="text-muted-foreground font-medium">Emergency Contact No:</span>
+							{patient.patientInformation.emergencyContact.contactNo ?? "N/A"}
+						</div>
 					</div>
 				</section>
 
 				<!-- Section: Surgical Details -->
 				<section>
-					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Surgical Details</h3>
-					<div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
-						<div class="col-span-full"><span class="font-medium text-muted-foreground">Diagnosis:</span> {patient.surgicalDetails.preOperativeDiagnosis ?? 'N/A'}</div>
-						<div class="col-span-full"><span class="font-medium text-muted-foreground">Proposed Plan:</span> {patient.surgicalDetails.proposedSurgicalPlan ?? 'N/A'}</div>
-						<div><span class="font-medium text-muted-foreground">Est. Blood Loss:</span> {patient.surgicalDetails.estimatedBloodLoss ?? 'N/A'}</div>
+					<h3 class="mb-3 border-b pb-2 text-lg font-semibold">Surgical Details</h3>
+					<div class="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2">
+						<div class="col-span-full">
+							<span class="text-muted-foreground font-medium">Diagnosis:</span>
+							{patient.surgicalDetails.preOperativeDiagnosis ?? "N/A"}
+						</div>
+						<div class="col-span-full">
+							<span class="text-muted-foreground font-medium">Proposed Plan:</span>
+							{patient.surgicalDetails.proposedSurgicalPlan ?? "N/A"}
+						</div>
+						<div>
+							<span class="text-muted-foreground font-medium">Est. Blood Loss:</span>
+							{patient.surgicalDetails.estimatedBloodLoss ?? "N/A"}
+						</div>
 					</div>
 				</section>
-				
+
 				<!-- Section: Pre-Operative History -->
 				<section>
-					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Pre-Operative History</h3>
+					<h3 class="mb-3 border-b pb-2 text-lg font-semibold">Pre-Operative History</h3>
 					<div class="space-y-4">
 						<div>
 							<h4 class="font-semibold">Allergies</h4>
-							<p>Has Allergies: <span class="font-mono">{patient.preOperativeHistory.allergies.hasAllergies ? 'Yes' : 'No'}</span></p>
+							<p>
+								Has Allergies: <span class="font-mono"
+									>{patient.preOperativeHistory.allergies.hasAllergies ? "Yes" : "No"}</span
+								>
+							</p>
 							{#if patient.preOperativeHistory.allergies.hasAllergies}
-								<p>Details: {patient.preOperativeHistory.allergies.details ?? 'N/A'}</p>
+								<p>Details: {patient.preOperativeHistory.allergies.details ?? "N/A"}</p>
 							{/if}
 						</div>
 						<div>
 							<h4 class="font-semibold">Cardiac / Pulmonary</h4>
-							<div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1">
-								<span>High Blood Pressure: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.highBloodPressure ? 'Yes' : 'No'}</span></span>
-								<span>Chest Pain: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.chestPain ? 'Yes' : 'No'}</span></span>
-								<span>Irregular Heart Beat: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.irregularHeartBeat ? 'Yes' : 'No'}</span></span>
-								<span>Heart Disease: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.heartDisease ? 'Yes' : 'No'}</span></span>
-								<span>Heart Attack: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.heartAttack ? 'Yes' : 'No'}</span></span>
-								<span>Difficulty Breathing: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.difficultyOfBreathing ? 'Yes' : 'No'}</span></span>
-								<span>Asthma: <span class="font-mono">{patient.preOperativeHistory.cardiacPulmonary.asthma.hasAsthma ? 'Yes' : 'No'}</span></span>
+							<div class="grid grid-cols-2 gap-x-6 gap-y-1 md:grid-cols-3">
+								<span
+									>High Blood Pressure: <span class="font-mono"
+										>{patient.preOperativeHistory.cardiacPulmonary.highBloodPressure
+											? "Yes"
+											: "No"}</span
+									></span
+								>
+								<span
+									>Chest Pain: <span class="font-mono"
+										>{patient.preOperativeHistory.cardiacPulmonary.chestPain ? "Yes" : "No"}</span
+									></span
+								>
+								<span
+									>Irregular Heart Beat: <span class="font-mono"
+										>{patient.preOperativeHistory.cardiacPulmonary.irregularHeartBeat
+											? "Yes"
+											: "No"}</span
+									></span
+								>
+								<span
+									>Heart Disease: <span class="font-mono"
+										>{patient.preOperativeHistory.cardiacPulmonary.heartDisease
+											? "Yes"
+											: "No"}</span
+									></span
+								>
+								<span
+									>Heart Attack: <span class="font-mono"
+										>{patient.preOperativeHistory.cardiacPulmonary.heartAttack ? "Yes" : "No"}</span
+									></span
+								>
+								<span
+									>Difficulty Breathing: <span class="font-mono"
+										>{patient.preOperativeHistory.cardiacPulmonary.difficultyOfBreathing
+											? "Yes"
+											: "No"}</span
+									></span
+								>
+								<span
+									>Asthma: <span class="font-mono"
+										>{patient.preOperativeHistory.cardiacPulmonary.asthma.hasAsthma
+											? "Yes"
+											: "No"}</span
+									></span
+								>
 							</div>
 						</div>
 						<!-- ... You can continue this pattern for all other history sections ... -->
@@ -526,14 +594,19 @@
 
 				<!-- Section: Past Surgical History -->
 				<section>
-					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Past Surgical / Anesthetic History</h3>
+					<h3 class="mb-3 border-b pb-2 text-lg font-semibold">
+						Past Surgical / Anesthetic History
+					</h3>
 					<div>
 						<h4 class="font-semibold">Previous Surgeries</h4>
 						{#if patient.pastSurgicalHistory.surgeries && patient.pastSurgicalHistory.surgeries.length > 0}
 							<ul class="list-disc pl-5">
-							{#each patient.pastSurgicalHistory.surgeries as surgery}
-								<li>{new Date(surgery.date).toLocaleDateString()}: {surgery.procedure} ({surgery.typeOfAnesthesia}) - Complications: {surgery.complications ?? 'None'}</li>
-							{/each}
+								{#each patient.pastSurgicalHistory.surgeries as surgery}
+									<li>
+										{new Date(surgery.date).toLocaleDateString()}: {surgery.procedure} ({surgery.typeOfAnesthesia})
+										- Complications: {surgery.complications ?? "None"}
+									</li>
+								{/each}
 							</ul>
 						{:else}
 							<p>None</p>
@@ -541,45 +614,100 @@
 					</div>
 					<div class="mt-2">
 						<h4 class="font-semibold">Family Anesthesia Complication</h4>
-						<p>Has Complication History: <span class="font-mono">{patient.pastSurgicalHistory.familyAnesthesiaComplication.hasComplication ? 'Yes' : 'No'}</span></p>
+						<p>
+							Has Complication History: <span class="font-mono"
+								>{patient.pastSurgicalHistory.familyAnesthesiaComplication.hasComplication
+									? "Yes"
+									: "No"}</span
+							>
+						</p>
 						{#if patient.pastSurgicalHistory.familyAnesthesiaComplication.hasComplication}
-							<p>Details: {patient.pastSurgicalHistory.familyAnesthesiaComplication.specify ?? 'N/A'}</p>
+							<p>
+								Details: {patient.pastSurgicalHistory.familyAnesthesiaComplication.specify ?? "N/A"}
+							</p>
 						{/if}
 					</div>
 				</section>
 
 				<!-- Section: Physical Examination -->
 				<section>
-					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Physical Examination</h3>
+					<h3 class="mb-3 border-b pb-2 text-lg font-semibold">Physical Examination</h3>
 					<div>
 						<h4 class="font-semibold">Vitals</h4>
-						<div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-1">
-							<span>BP: <span class="font-mono">{patient.physicalExamination.vitals.bp ?? 'N/A'}</span></span>
-							<span>HR: <span class="font-mono">{patient.physicalExamination.vitals.hr ?? 'N/A'}</span></span>
-							<span>RR: <span class="font-mono">{patient.physicalExamination.vitals.rr ?? 'N/A'}</span></span>
-							<span>Temp: <span class="font-mono">{patient.physicalExamination.vitals.temp ?? 'N/A'}</span></span>
-							<span>SpO2: <span class="font-mono">{patient.physicalExamination.vitals.spo2 ?? 'N/A'}</span></span>
-							<span>Weight: <span class="font-mono">{patient.physicalExamination.vitals.weightKg ?? 'N/A'} kg</span></span>
-							<span>Height: <span class="font-mono">{patient.physicalExamination.vitals.heightCm ?? 'N/A'} cm</span></span>
-							<span>BMI: <span class="font-mono">{patient.physicalExamination.vitals.bmi ?? 'N/A'}</span></span>
+						<div class="grid grid-cols-2 gap-x-6 gap-y-1 md:grid-cols-4">
+							<span
+								>BP: <span class="font-mono">{patient.physicalExamination.vitals.bp ?? "N/A"}</span
+								></span
+							>
+							<span
+								>HR: <span class="font-mono">{patient.physicalExamination.vitals.hr ?? "N/A"}</span
+								></span
+							>
+							<span
+								>RR: <span class="font-mono">{patient.physicalExamination.vitals.rr ?? "N/A"}</span
+								></span
+							>
+							<span
+								>Temp: <span class="font-mono"
+									>{patient.physicalExamination.vitals.temp ?? "N/A"}</span
+								></span
+							>
+							<span
+								>SpO2: <span class="font-mono"
+									>{patient.physicalExamination.vitals.spo2 ?? "N/A"}</span
+								></span
+							>
+							<span
+								>Weight: <span class="font-mono"
+									>{patient.physicalExamination.vitals.weightKg ?? "N/A"} kg</span
+								></span
+							>
+							<span
+								>Height: <span class="font-mono"
+									>{patient.physicalExamination.vitals.heightCm ?? "N/A"} cm</span
+								></span
+							>
+							<span
+								>BMI: <span class="font-mono"
+									>{patient.physicalExamination.vitals.bmi ?? "N/A"}</span
+								></span
+							>
 						</div>
 					</div>
 					<div class="mt-4">
 						<h4 class="font-semibold">ECG</h4>
-						<p>{patient.physicalExamination.findings.ecg ?? 'Not specified.'}</p>
+						<p>{patient.physicalExamination.findings.ecg ?? "Not specified."}</p>
 					</div>
 				</section>
-				
+
 				<!-- Section: Anesthesia & Clinical Plan -->
 				<section>
-					<h3 class="text-lg font-semibold border-b pb-2 mb-3">Anesthesia Assessment & Plan</h3>
-					<div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
-						<div><span class="font-medium text-muted-foreground">Mallampati Score:</span> {patient.anesthesiaAssessment.airwayDental.mallampati ?? 'N/A'}</div>
-						<div><span class="font-medium text-muted-foreground">Full Neck Extension:</span> {patient.anesthesiaAssessment.airwayDental.fullNeckExtension ? 'Yes' : 'No'}</div>
-						<div><span class="font-medium text-muted-foreground">ASA Score:</span> {patient.clinicalRiskAndPlan.asaScore ?? 'N/A'}</div>
-						<div><span class="font-medium text-muted-foreground">Surgical Risk:</span> {patient.clinicalRiskAndPlan.surgicalRiskProcedure ?? 'N/A'}</div>
-						<div class="col-span-full"><span class="font-medium text-muted-foreground">Cardiac Risk Assessment:</span> {patient.clinicalRiskAndPlan.medicalRiskAssessment.cardiac ?? 'N/A'}</div>
-						<div class="col-span-full"><span class="font-medium text-muted-foreground">Recommendations:</span> {patient.clinicalRiskAndPlan.medicalRiskAssessment.othersRecommendations ?? 'None'}</div>
+					<h3 class="mb-3 border-b pb-2 text-lg font-semibold">Anesthesia Assessment & Plan</h3>
+					<div class="grid grid-cols-1 gap-x-6 gap-y-2 md:grid-cols-2">
+						<div>
+							<span class="text-muted-foreground font-medium">Mallampati Score:</span>
+							{patient.anesthesiaAssessment.airwayDental.mallampati ?? "N/A"}
+						</div>
+						<div>
+							<span class="text-muted-foreground font-medium">Full Neck Extension:</span>
+							{patient.anesthesiaAssessment.airwayDental.fullNeckExtension ? "Yes" : "No"}
+						</div>
+						<div>
+							<span class="text-muted-foreground font-medium">ASA Score:</span>
+							{patient.clinicalRiskAndPlan.asaScore ?? "N/A"}
+						</div>
+						<div>
+							<span class="text-muted-foreground font-medium">Surgical Risk:</span>
+							{patient.clinicalRiskAndPlan.surgicalRiskProcedure ?? "N/A"}
+						</div>
+						<div class="col-span-full">
+							<span class="text-muted-foreground font-medium">Cardiac Risk Assessment:</span>
+							{patient.clinicalRiskAndPlan.medicalRiskAssessment.cardiac ?? "N/A"}
+						</div>
+						<div class="col-span-full">
+							<span class="text-muted-foreground font-medium">Recommendations:</span>
+							{patient.clinicalRiskAndPlan.medicalRiskAssessment.othersRecommendations ?? "None"}
+						</div>
 					</div>
 				</section>
 			</div>

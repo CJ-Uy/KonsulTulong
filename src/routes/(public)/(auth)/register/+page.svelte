@@ -3,8 +3,8 @@
 	import { Button } from "@/components/ui/button";
 	import { Input } from "@/components/ui/input";
 	import { Label } from "@/components/ui/label";
-	import { signUp, signIn } from '$lib/auth-client';
-	import { goto } from '$app/navigation';
+	import { signUp, signIn } from "$lib/auth-client";
+	import { goto } from "$app/navigation";
 
 	/**
 	 * @type {any}
@@ -21,8 +21,8 @@
 	/**
 	 * @type {any}
 	 */
-	 let first_name;
-	 /**
+	let first_name;
+	/**
 	 * @type {any}
 	 */
 	let last_name;
@@ -38,19 +38,19 @@
 
 	const googleSignIn = async () => {
 		const data = await signIn.social({
-			provider: 'google',
-            callbackURL: "/registered",
-            errorCallbackURL: "/login",
-            newUserCallbackURL: "/registered",
+			provider: "google",
+			callbackURL: "/registered",
+			errorCallbackURL: "/login",
+			newUserCallbackURL: "/registered"
 		});
 	};
 
-    const facebookSignIn = async () => {
+	const facebookSignIn = async () => {
 		const data = await signIn.social({
-			provider: 'facebook',
-            callbackURL: "/registered",
-            errorCallbackURL: "/login",
-            newUserCallbackURL: "/registered",
+			provider: "facebook",
+			callbackURL: "/registered",
+			errorCallbackURL: "/login",
+			newUserCallbackURL: "/registered"
 		});
 	};
 
@@ -60,18 +60,18 @@
 				email, // user email address
 				password, // user password -> min 8 characters by default
 				name: nickname, // user display name
-				callbackURL: '/dashboard' // a url to redirect to after the user verifies their email (optional)
+				callbackURL: "/dashboard" // a url to redirect to after the user verifies their email (optional)
 			},
 			{
 				onRequest: (ctx) => {
 					//show loading
 					// TODO add a spinner
-					console.log('Loading');
+					console.log("Loading");
 				},
 				onSuccess: (ctx) => {
 					//redirect to the dashboard or sign in page
-					console.log('Success');
-					goto('/dashboard');
+					console.log("Success");
+					goto("/dashboard");
 				},
 				onError: (ctx) => {
 					// display the error message

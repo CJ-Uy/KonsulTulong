@@ -10,7 +10,7 @@
 		<Sidebar.Menu>
 			{#each items as item (item.title)}
 				<Sidebar.MenuItem>
-					<Sidebar.MenuButton tooltipContent={item.title} >
+					<Sidebar.MenuButton tooltipContent={item.title}>
 						{#snippet child({ props })}
 							<a href={item.url} {...props}>
 								{#if item.icon}
@@ -19,7 +19,6 @@
 								<span>{item.title}</span>
 							</a>
 						{/snippet}
-						
 					</Sidebar.MenuButton>
 				</Sidebar.MenuItem>
 			{/each}
