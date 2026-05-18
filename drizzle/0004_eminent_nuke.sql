@@ -1,1 +1,0 @@
-ALTER TABLE "clinic" ADD COLUMN "clinic_name" varchar;

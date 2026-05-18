@@ -1,60 +1,40 @@
 import type { Handle } from "@sveltejs/kit";
-import { sequence } from "@sveltejs/kit/hooks"; // <-- Import sequence
-import { paraglideMiddleware } from "$lib/paraglide/server";
-import { auth } from "$lib/auth";
+import { sequence } from "@sveltejs/kit/hooks";
 import { svelteKitHandler } from "better-auth/svelte-kit";
-import { securityHandler } from "$lib/security";
+import { getDb } from "$lib/db";
+import { getAuth } from "$lib/auth";
 
-// better-auth handler
-const handleAuthentication: Handle = async ({ event, resolve }) => {
-	const isProtectedRoute =
-		event.url.pathname.startsWith("/dashboard") || event.url.pathname.startsWith("/registered");
+const PROTECTED_PREFIXES = ["/dashboard", "/registered"];
+
+const handleDb: Handle = async ({ event, resolve }) => {
+	event.locals.db = getDb(event.platform);
+	return resolve(event);
+};
+
+const handleAuth: Handle = async ({ event, resolve }) => {
+	const baseURL = event.url.origin;
+	const auth = getAuth(event.platform, baseURL);
+
 	try {
-		const session = await auth.api.getSession({
-			headers: event.request.headers
-		});
-
-		event.locals.session = session;
-
-		if (isProtectedRoute && (!session || !session.user)) {
-			// Redirect to login
-			return new Response(null, {
-				status: 302,
-				headers: {
-					Location: "/login"
-				}
-			});
+		const session = await auth.api.getSession({ headers: event.request.headers });
+		if (session) {
+			event.locals.user = session.user as unknown as App.Locals["user"];
+			event.locals.session = {
+				id: session.session.id,
+				userId: session.session.userId,
+				expiresAt: new Date(session.session.expiresAt)
+			};
 		}
-	} catch (error) {
-		console.log(error);
-
-		if (isProtectedRoute) {
-			// Redirect to login or show an error
-			return new Response(null, {
-				status: 302,
-				headers: {
-					Location: "/sign-in" // Optional redirect
-				}
-			});
-		}
+	} catch {
+		// no session — anonymous request
 	}
 
-	// // adds the security functions to locals to make it accessible in other server side code
-	event.locals.security = securityHandler(event);
+	const isProtected = PROTECTED_PREFIXES.some((p) => event.url.pathname.startsWith(p));
+	if (isProtected && !event.locals.user) {
+		return new Response(null, { status: 302, headers: { Location: "/login" } });
+	}
 
 	return svelteKitHandler({ event, resolve, auth });
 };
 
-// Paraglide handler
-const handleParaglide: Handle = ({ event, resolve }) =>
-	paraglideMiddleware(event.request, ({ request, locale }) => {
-		event.request = request;
-
-		return resolve(event, {
-			transformPageChunk: ({ html }) => html.replace("%paraglide.lang%", locale)
-		});
-	});
-
-// Use sequence to chain the handlers together.
-// SvelteKit will run them in this order for every request.
-export const handle = sequence(handleParaglide, handleAuthentication);
+export const handle = sequence(handleDb, handleAuth);

@@ -2,14 +2,14 @@
 	import { z } from "zod";
 
 	export const formSchema = z.object({
-		pin: z.string().min(6, {
-			message: "Your clinic code must be at least 6 characters."
-		})
+		code: z
+			.string()
+			.min(6, { message: "Clinic code must be 6 characters." })
+			.max(6, { message: "Clinic code must be 6 characters." })
 	});
 </script>
 
 <script lang="ts">
-	import * as NavigationMenu from "$lib/components/ui/navigation-menu/index.js";
 	import { defaults, superForm } from "sveltekit-superforms";
 	import { zod } from "sveltekit-superforms/adapters";
 	import { toast } from "svelte-sonner";
@@ -17,62 +17,49 @@
 	import * as InputOTP from "$lib/components/ui/input-otp/index.js";
 	import * as Form from "$lib/components/ui/form/index.js";
 
-	// Function to verify clinic code with API
-	async function verifyClinicCode(code: string): Promise<boolean> {
-		// Place API checking code
-		return true;
-	}
-
 	const form = superForm(defaults(zod(formSchema)), {
 		validators: zod(formSchema),
 		SPA: true,
 		onSubmit: async ({ formData, cancel }) => {
-			const pin = formData.get("pin") as string;
+			cancel();
+			const code = (formData.get("code") as string)?.toUpperCase();
+			if (!code) return;
 
-			if (pin && pin.length >= 6) {
-				cancel(); // Cancel the form submission
+			toast.loading("Checking clinic code…", { id: "verify" });
+			const res = await fetch(`/api/clinic/${encodeURIComponent(code)}`);
+			toast.dismiss("verify");
 
-				toast.loading("Verifying clinic code...");
-
-				const isValid = await verifyClinicCode(pin);
-
-				if (isValid) {
-					toast.success(`Valid clinic code! Redirecting...`);
-					goto(`/clinic/${pin}`);
-				} else {
-					toast.error("Invalid clinic code. Please try again.");
-				}
+			if (!res.ok) {
+				toast.error("Clinic not found. Please check the code.");
+				return;
 			}
-		},
-		onError: ({ result }) => {
-			toast.error("Please fix the errors in the form.");
+			goto(`/c/${code}`);
 		}
 	});
 
 	const { form: formData, enhance } = form;
 
 	$effect(() => {
-		const pin = $formData.pin;
-		if (pin && pin !== pin.toUpperCase()) {
-			$formData.pin = pin.toUpperCase();
-		}
+		const v = $formData.code;
+		if (v && v !== v.toUpperCase()) $formData.code = v.toUpperCase();
 	});
 </script>
 
-<main class="flex h-[80vh] flex-1 flex-col items-center justify-center px-4 py-8">
+<main class="flex min-h-screen flex-1 flex-col items-center justify-center px-4 py-8">
 	<h1 class="mb-2 text-center text-4xl font-bold md:text-7xl">KonsulTulong</h1>
-	<p class="mb-20 text-center text-base md:text-xl">
-		Start consultation through a 6-digit number or by scanning a QR code.
+	<p class="text-muted-foreground mb-12 text-center text-base md:text-xl">
+		Enter the 6-character clinic code or scan the QR poster.
 	</p>
+
 	<form
 		method="POST"
 		class="flex w-full max-w-xs flex-col items-center space-y-6 md:max-w-md"
 		use:enhance
 	>
-		<Form.Field {form} name="pin" class="flex flex-col items-center">
+		<Form.Field {form} name="code" class="flex flex-col items-center">
 			<Form.Control>
 				{#snippet children({ props })}
-					<InputOTP.Root maxlength={6} {...props} bind:value={$formData.pin}>
+					<InputOTP.Root maxlength={6} {...props} bind:value={$formData.code}>
 						{#snippet children({ cells })}
 							<InputOTP.Group>
 								{#each cells as cell, i (i)}
@@ -85,29 +72,11 @@
 			</Form.Control>
 			<Form.FieldErrors class="text-center" />
 		</Form.Field>
-		<Form.Button>Consult</Form.Button>
+		<Form.Button>Continue</Form.Button>
 	</form>
 
-	<!-- Divider and QR code section, only on mobile/tablet -->
-	<div class="mt-8 flex w-full flex-col items-center md:hidden">
-		<hr class="my-6 w-full border-t" />
-		<button class="mt-8 flex flex-col items-center rounded-lg border bg-white px-8 py-6 shadow-sm">
-			<span class="mb-2 font-semibold">QR Code</span>
-			<!-- Replace with your QR code icon component if you have one -->
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-8 w-8 text-gray-700"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M4 4h4v4H4V4zm0 12h4v4H4v-4zm12-12h4v4h-4V4zm0 12h4v4h-4v-4z"
-				/>
-			</svg>
-		</button>
-	</div>
+	<p class="text-muted-foreground mt-12 text-xs">
+		Are you a clinic? <a class="underline" href="/login">Sign in</a> ·
+		<a class="underline" href="/register">Register</a>
+	</p>
 </main>

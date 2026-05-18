@@ -1,14 +1,19 @@
-import adapter from "@sveltejs/adapter-node";
+import adapter from "@sveltejs/adapter-cloudflare";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
-import dotenv from "dotenv";
-
-// Load environment variables from .env file
-dotenv.config();
 
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({
+			routes: {
+				include: ["/*"],
+				exclude: ["<all>"]
+			},
+			platformProxy: {
+				configPath: "wrangler.jsonc",
+				persist: true
+			}
+		}),
 		alias: {
 			"@/*": "./src/lib/*"
 		}

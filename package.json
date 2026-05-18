@@ -20,6 +20,7 @@
 		"db:delete": "tsx src/lib/db/scripts/delete.ts"
 	},
 	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20260518.1",
 		"@dnd-kit-svelte/core": "^0.0.8",
 		"@dnd-kit-svelte/modifiers": "^0.0.8",
 		"@dnd-kit-svelte/sortable": "^0.0.8",
@@ -30,7 +31,7 @@
 		"@internationalized/date": "^3.8.1",
 		"@lucide/svelte": "^0.515.0",
 		"@svelte-put/qr": "^2.1.0",
-		"@sveltejs/adapter-node": "^5.2.12",
+		"@sveltejs/adapter-cloudflare": "^7.2.8",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tabler/icons-svelte": "^3.34.0",
@@ -70,7 +71,8 @@
 		"typescript": "^5.0.0",
 		"typescript-eslint": "^8.20.0",
 		"vaul-svelte": "1.0.0-next.7",
-		"vite": "^6.2.6"
+		"vite": "^6.2.6",
+		"wrangler": "^4.92.0"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.832.0",
