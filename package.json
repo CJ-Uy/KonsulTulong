@@ -28,7 +28,6 @@
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
 		"@faker-js/faker": "^9.8.0",
-		"@internationalized/date": "^3.8.1",
 		"@lucide/svelte": "^0.515.0",
 		"@svelte-put/qr": "^2.1.0",
 		"@sveltejs/adapter-cloudflare": "^7.2.8",
@@ -75,15 +74,9 @@
 		"wrangler": "^4.92.0"
 	},
 	"dependencies": {
-		"@aws-sdk/client-s3": "^3.832.0",
-		"@inlang/paraglide-js": "^2.0.0",
 		"better-auth": "^1.2.9",
-		"dotenv": "^16.5.0",
-		"drizzle-cuid2": "^2.0.0",
 		"drizzle-orm": "^0.40.0",
 		"nanoid": "^5.1.5",
-		"pg": "^8.16.2",
-		"postgres": "^3.4.5",
 		"zod": "^3.25.64"
 	},
 	"pnpm": {
