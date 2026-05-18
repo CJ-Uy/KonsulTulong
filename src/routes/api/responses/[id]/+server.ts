@@ -1,7 +1,10 @@
 import { error, json } from "@sveltejs/kit";
 import { eq } from "drizzle-orm";
-import { response } from "$lib/db/schema";
-import type { AnswerValue } from "$lib/types";
+import { response, template } from "$lib/db/schema";
+import { scoreResponse } from "$lib/forms/scoring";
+import { audit } from "$lib/server/audit";
+import type { FormField } from "$lib/types/forms";
+import type { AnswerValue, ScoringConfig } from "$lib/types";
 import type { RequestHandler } from "./$types";
 
 /**
@@ -34,7 +37,12 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 	if (!body) throw error(400, "Missing body");
 
 	const rows = await locals.db
-		.select({ status: response.status, values: response.values })
+		.select({
+			status: response.status,
+			values: response.values,
+			templateId: response.templateId,
+			clinicId: response.clinicId
+		})
 		.from(response)
 		.where(eq(response.id, params.id))
 		.limit(1);
@@ -48,11 +56,35 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 
 	const update: Record<string, unknown> = { values: merged };
 	if (body.finalize) {
+		const tmplRows = await locals.db
+			.select({ questions: template.questions, scoring: template.scoring })
+			.from(template)
+			.where(eq(template.id, rows[0].templateId))
+			.limit(1);
+		if (tmplRows.length === 0) throw error(404, "Template missing");
+
+		const score = scoreResponse(
+			(tmplRows[0].questions ?? []) as FormField[],
+			merged,
+			(tmplRows[0].scoring ?? null) as ScoringConfig | null
+		);
+
 		update.status = "submitted";
 		update.submittedAt = new Date();
-		// Scoring hook lands in phase 11.
+		if (score) update.score = score;
 	}
 
 	await locals.db.update(response).set(update).where(eq(response.id, params.id));
+
+	if (body.finalize) {
+		await audit(locals.db, {
+			actorType: "patient",
+			clinicId: rows[0].clinicId,
+			action: "response.submit",
+			resourceType: "response",
+			resourceId: params.id
+		});
+	}
+
 	return json({ ok: true, submitted: body.finalize === true });
 };

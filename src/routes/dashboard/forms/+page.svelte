@@ -24,12 +24,27 @@
 		}
 		invalidateAll();
 	}
+
+	async function seed() {
+		const res = await fetch("/api/templates/seed", { method: "POST" });
+		if (!res.ok) {
+			toast.error("Could not seed");
+			return;
+		}
+		const { inserted } = (await res.json()) as { inserted: { name: string }[] };
+		if (inserted.length === 0) toast("All validated templates already present.");
+		else toast.success(`Installed ${inserted.length} validated template(s).`);
+		invalidateAll();
+	}
 </script>
 
 <div class="space-y-6">
 	<div class="flex items-center justify-between">
 		<h1 class="text-2xl font-bold">Forms</h1>
-		<Button onclick={createBlank}>+ New form</Button>
+		<div class="flex gap-2">
+			<Button variant="outline" onclick={seed}>Install validated templates</Button>
+			<Button onclick={createBlank}>+ New form</Button>
+		</div>
 	</div>
 
 	{#if data.templates.length === 0}
