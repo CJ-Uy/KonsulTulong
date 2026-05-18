@@ -10,7 +10,7 @@
 		{ href: "/dashboard/queue", label: "Queue", roles: ["secretary", "admin", "doctor"] },
 		{ href: "/dashboard/consult", label: "Consult", roles: ["doctor", "admin"] },
 		{ href: "/dashboard/forms", label: "Forms", roles: ["doctor", "admin"] },
-		{ href: "/dashboard/flows", label: "Flows", roles: ["doctor", "admin"] },
+		{ href: "/dashboard/citations", label: "Citations", roles: ["doctor", "admin"] },
 		{ href: "/dashboard/settings", label: "Settings", roles: ["admin"] }
 	];
 

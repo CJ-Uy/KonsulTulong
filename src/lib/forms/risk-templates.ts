@@ -266,4 +266,197 @@ export const AUDITC: RiskTemplateSeed = {
 	}
 };
 
-export const ALL_RISK_TEMPLATES: RiskTemplateSeed[] = [PHQ9, PHQ2, GAD7, AUDITC];
+const EPWORTH_OPTS = [
+	"Would never doze",
+	"Slight chance of dozing",
+	"Moderate chance of dozing",
+	"High chance of dozing"
+];
+
+function epQ(id: string, text: string): FormField {
+	return {
+		id,
+		order: 0,
+		text,
+		type: "multiple_choice",
+		required: true,
+		options: EPWORTH_OPTS
+	};
+}
+
+export const EPWORTH: RiskTemplateSeed = {
+	slug: "epworth",
+	name: "Epworth Sleepiness Scale",
+	description:
+		"How likely are you to doze off or fall asleep in the following situations, in contrast to feeling just tired?",
+	citation:
+		"Johns MW. A new method for measuring daytime sleepiness: the Epworth sleepiness scale. Sleep. 1991 Dec;14(6):540-5.",
+	questions: [
+		epQ("epworth_q1", "Sitting and reading"),
+		epQ("epworth_q2", "Watching TV"),
+		epQ("epworth_q3", "Sitting inactive in a public place (theater, meeting)"),
+		epQ("epworth_q4", "As a passenger in a car for an hour without a break"),
+		epQ("epworth_q5", "Lying down to rest in the afternoon when circumstances permit"),
+		epQ("epworth_q6", "Sitting and talking to someone"),
+		epQ("epworth_q7", "Sitting quietly after a lunch without alcohol"),
+		epQ("epworth_q8", "In a car, while stopped for a few minutes in traffic")
+	],
+	scoring: {
+		algorithm: "epworth",
+		resultBands: [
+			{
+				min: 0,
+				max: 5,
+				label: "Lower normal",
+				severity: "low",
+				advice: "Normal daytime sleepiness.",
+				color: "#10b981"
+			},
+			{
+				min: 6,
+				max: 10,
+				label: "Higher normal",
+				severity: "low",
+				advice: "Higher but still within normal range.",
+				color: "#84cc16"
+			},
+			{
+				min: 11,
+				max: 12,
+				label: "Mild excessive sleepiness",
+				severity: "moderate",
+				advice: "Consider evaluating sleep habits or possible sleep disorder.",
+				color: "#f59e0b"
+			},
+			{
+				min: 13,
+				max: 15,
+				label: "Moderate excessive sleepiness",
+				severity: "high",
+				advice: "Sleep specialist evaluation recommended.",
+				color: "#f97316"
+			},
+			{
+				min: 16,
+				max: 24,
+				label: "Severe excessive sleepiness",
+				severity: "very_high",
+				advice: "Urgent sleep evaluation; advise on driving safety.",
+				color: "#ef4444"
+			}
+		]
+	}
+};
+
+function yn(id: string, text: string): FormField {
+	return { id, order: 0, text, type: "boolean", required: true };
+}
+
+export const STOP_BANG: RiskTemplateSeed = {
+	slug: "stop-bang",
+	name: "STOP-BANG (OSA risk)",
+	description: "Obstructive sleep apnea screening questionnaire.",
+	citation:
+		"Chung F, Yegneswaran B, Liao P, et al. STOP questionnaire: a tool to screen patients for obstructive sleep apnea. Anesthesiology. 2008 May;108(5):812-21.",
+	questions: [
+		yn("sb_snore", "Do you snore loudly (heard through closed doors)?"),
+		yn("sb_tired", "Do you often feel tired or fatigued during the day?"),
+		yn("sb_observed", "Has anyone observed you stop breathing during your sleep?"),
+		yn("sb_pressure", "Do you have or are you being treated for high blood pressure?"),
+		yn("sb_bmi", "Is your BMI more than 35?"),
+		yn("sb_age", "Are you older than 50 years?"),
+		yn("sb_neck", "Is your neck circumference greater than 40 cm?"),
+		yn("sb_male", "Are you male?")
+	],
+	scoring: {
+		algorithm: "additive",
+		resultBands: [
+			{
+				min: 0,
+				max: 2,
+				label: "Low risk",
+				severity: "low",
+				advice: "Low risk of obstructive sleep apnea.",
+				color: "#10b981"
+			},
+			{
+				min: 3,
+				max: 4,
+				label: "Intermediate risk",
+				severity: "moderate",
+				advice: "Consider further evaluation; sleep study may be appropriate.",
+				color: "#f59e0b"
+			},
+			{
+				min: 5,
+				max: 8,
+				label: "High risk",
+				severity: "high",
+				advice: "Refer for sleep study; high probability of moderate-to-severe OSA.",
+				color: "#ef4444"
+			}
+		]
+	}
+};
+
+function num0to(id: string, text: string, max: number): FormField {
+	return {
+		id,
+		order: 0,
+		text,
+		type: "number",
+		required: true,
+		numberConfig: { wholeNumbersOnly: true, allowNegative: false, validationType: "range", min: 0, max }
+	};
+}
+
+export const MINI_COG: RiskTemplateSeed = {
+	slug: "mini-cog",
+	name: "Mini-Cog (Cognitive screen, assisted)",
+	description:
+		"Quick cognitive screen for dementia. Examiner-administered: 3-word recall and clock-drawing test, with the recall task interrupted by the clock-draw distractor.",
+	citation:
+		"Borson S, Scanlan J, Brush M, Vitaliano P, Dokmak A. The Mini-Cog: a cognitive 'vital signs' measure for dementia screening in multi-lingual elderly. Int J Geriatr Psychiatry. 2000 Nov;15(11):1021-7.",
+	assistedOnly: true,
+	questions: [
+		{
+			id: "mc_intro",
+			order: 0,
+			text: "Examiner script: say 3 unrelated words (e.g., Banana, Sunrise, Chair). Ask the patient to repeat them. Then have them draw a clock showing a specific time (e.g., 11:10). Then ask them to recall the 3 words.",
+			type: "section_header"
+		},
+		num0to("mc_recall", "Words recalled correctly (0-3)", 3),
+		num0to("mc_clock", "Clock-drawing test score: 0 = abnormal, 2 = normal", 2)
+	],
+	scoring: {
+		algorithm: "additive",
+		resultBands: [
+			{
+				min: 0,
+				max: 2,
+				label: "Positive screen",
+				severity: "high",
+				advice: "Further cognitive evaluation indicated.",
+				color: "#ef4444"
+			},
+			{
+				min: 3,
+				max: 5,
+				label: "Negative screen",
+				severity: "low",
+				advice: "No further cognitive workup indicated by this screen.",
+				color: "#10b981"
+			}
+		]
+	}
+};
+
+export const ALL_RISK_TEMPLATES: RiskTemplateSeed[] = [
+	PHQ9,
+	PHQ2,
+	GAD7,
+	AUDITC,
+	EPWORTH,
+	STOP_BANG,
+	MINI_COG
+];

@@ -27,7 +27,7 @@
 	],
 
 	"vars": {
-		"PUBLIC_BETTER_AUTH_URL": "http://localhost:5173"
+		"PUBLIC_BETTER_AUTH_URL": "https://konsultulong.cj-uy.workers.dev"
 	}
 
 	// Durable Object for experimental live queue (Phase 15) — enable later:
